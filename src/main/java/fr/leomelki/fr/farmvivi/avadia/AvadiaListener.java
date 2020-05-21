@@ -110,7 +110,7 @@ public class AvadiaListener implements Listener {
                 config.set("distributionFixed." + role, 0);
             config.set("distributionFixed.Villageois", 12);
             MainLg.getInstance().setEndGame(false);
-        }, 600);
+        }, 100);
     }
 
     @EventHandler

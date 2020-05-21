@@ -72,6 +72,8 @@ class ParserRolesRandom extends ParserRolesAbstract {
         }
 
         this.setOpenedSlots(amount);
+        this.instanceMainLg.saveConfig();
+        this.instanceMainLg.loadConfig();
         this.printAmountOfPlayers(sender, amount);
         sender.sendMessage("§7§oSi vous avez fini de changer les rôles, utilisez §8§o/lg joinall§7§o");
     }
