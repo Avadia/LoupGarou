@@ -3,6 +3,7 @@ package fr.leomelki.fr.farmvivi.avadia;
 import fr.leomelki.loupgarou.MainLg;
 import fr.leomelki.loupgarou.classes.LGGame;
 import fr.leomelki.loupgarou.events.LGGameEndEvent;
+import fr.leomelki.loupgarou.events.LGGameJoinEvent;
 import fr.leomelki.loupgarou.roles.Role;
 import lombok.Getter;
 import org.bukkit.Bukkit;
@@ -91,8 +92,8 @@ public class AvadiaListener implements Listener {
     }
 
     @EventHandler
-    public void onJoin(PlayerJoinEvent event) {
-        Player player = event.getPlayer();
+    public void onJoin(LGGameJoinEvent event) {
+        Player player = event.getPlayer().getPlayer();
         setupItems(player);
     }
 

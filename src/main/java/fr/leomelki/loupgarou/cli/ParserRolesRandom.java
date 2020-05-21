@@ -58,12 +58,17 @@ class ParserRolesRandom extends ParserRolesAbstract {
     /*                              SET PLAYER SLOTS                              */
     /* ========================================================================== */
 
-    @SuppressWarnings("ConstantConditions")
     private void setPlayerSlots(CommandSender sender, String[] args) {
+        if (args.length < 3) {
+            sender.sendMessage("\n§4Erreur: §cCommande incorrecte.");
+            sender.sendMessage("§4Essayez §c/lg random players <nombreDeJoueurs>");
+            return;
+        }
         final Integer amount = this.parseInteger(args[2]);
 
         if (amount == null) {
             sender.sendMessage("\n§4Erreur: La valeur §c'" + args[2] + "'§4 n'est pas une quantité valide de joueurs");
+            return;
         }
 
         this.setOpenedSlots(amount);
