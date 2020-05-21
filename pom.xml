@@ -12,11 +12,11 @@
 	<!-- ============================================= -->
 
 	<properties>
-		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-		<project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
-		<spigot.version>1.15.1-R0.1-SNAPSHOT</spigot.version>
-		<source.directory>src/main/java</source.directory>
-	</properties>
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
+        <spigot.version>1.15.2-R0.1-SNAPSHOT</spigot.version>
+        <source.directory>src/main/java</source.directory>
+    </properties>
 
 	<!-- ======================================== -->
 	<!--                  BUILD                   -->

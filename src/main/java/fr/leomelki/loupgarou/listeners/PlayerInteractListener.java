@@ -17,11 +17,12 @@ import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 
 import java.lang.reflect.Constructor;
-import java.util.HashMap;
 import java.util.Map;
+import java.util.Objects;
 
 public class PlayerInteractListener implements Listener {
-    @Getter private Map<String, Constructor<? extends Role>> roles = new HashMap<>();
+    @Getter
+    private final Map<String, Constructor<? extends Role>> roles;
 
     public PlayerInteractListener(Map<String, Constructor<? extends Role>> roles) {
         this.roles = roles;
@@ -53,9 +54,9 @@ public class PlayerInteractListener implements Listener {
         Player p = (Player) e.getWhoClicked();
         if (e.getView().getTitle().equals("Rôles")) {
             int index = 0;
-            Integer n = null;
+            int n;
 
-            if (e.getCurrentItem().getType() == Material.GOLD_NUGGET) {
+            if (Objects.requireNonNull(e.getCurrentItem()).getType() == Material.GOLD_NUGGET) {
                 for (Player pl : Bukkit.getOnlinePlayers())
                     Bukkit.getPluginManager().callEvent(new PlayerQuitEvent(pl, "joinall"));
                 for (Player pl : Bukkit.getOnlinePlayers())
@@ -64,7 +65,7 @@ public class PlayerInteractListener implements Listener {
                 p.getInventory().setItem(1, new ItemBuilder(Material.ENDER_EYE).setName("Choisir les rôles").build());
             } else if (e.isLeftClick()) {
                 for (String role : getRoles().keySet()) {
-                    if (role.equals(e.getCurrentItem().getItemMeta().getDisplayName())) {
+                    if (role.equals(Objects.requireNonNull(e.getCurrentItem().getItemMeta()).getDisplayName())) {
                         n = MainLg.getInstance().getConfig().getInt("distributionFixed." + role);
                         Bukkit.dispatchCommand(p, "lg roles set " + index + " " + (n + 1));
                         return;
@@ -73,7 +74,7 @@ public class PlayerInteractListener implements Listener {
                 }
             } else if (e.isRightClick()) {
                 for (String role : getRoles().keySet()) {
-                    if (role.equals(e.getCurrentItem().getItemMeta().getDisplayName())) {
+                    if (role.equals(Objects.requireNonNull(e.getCurrentItem().getItemMeta()).getDisplayName())) {
                         n = MainLg.getInstance().getConfig().getInt("distributionFixed." + role);
                         if (n > 0)
                             Bukkit.dispatchCommand(p, "lg roles set " + index + " " + (n - 1));

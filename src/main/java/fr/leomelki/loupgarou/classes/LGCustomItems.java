@@ -1,123 +1,116 @@
 package fr.leomelki.loupgarou.classes;
 
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.io.Reader;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.List;
-import java.util.StringJoiner;
-import java.util.Map.Entry;
-
+import fr.leomelki.loupgarou.events.LGCustomItemChangeEvent;
+import fr.leomelki.loupgarou.roles.Role;
+import lombok.Getter;
+import lombok.RequiredArgsConstructor;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 
-import fr.leomelki.loupgarou.events.LGCustomItemChangeEvent;
-import fr.leomelki.loupgarou.roles.Role;
-import lombok.Getter;
-import lombok.RequiredArgsConstructor;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.io.Reader;
+import java.util.*;
+import java.util.Map.Entry;
 
 public class LGCustomItems {
-	static final HashMap<Class<? extends Role>, HashMap<String, Material>> mappings = new HashMap<>();
-	static final String JSON_FILE = "custom_items.json";
+    static final HashMap<Class<? extends Role>, HashMap<String, Material>> mappings = new HashMap<>();
+    static final String JSON_FILE = "custom_items.json";
 
-	private static Object readCustomItemsJSON() throws Exception {
-		final InputStream stream = LGCustomItems.class.getClassLoader().getResourceAsStream(LGCustomItems.JSON_FILE);
-		final Reader reader = new InputStreamReader(stream);
-		JSONParser jsonParser = new JSONParser();
+    static {
+        JSONObject parsedJson;
 
-		return jsonParser.parse(reader);
-	}
+        try {
+            parsedJson = (JSONObject) readCustomItemsJSON();
+        } catch (Exception e) {
+            throw new RuntimeException("Failed to parse JSON file" + LGCustomItems.JSON_FILE, e);
+        }
 
-	private static void addItem(final String roleName, HashMap<String, Material> currentMapping) {
-		try {
-			@SuppressWarnings("unchecked")
-			final Class<? extends Role> matchingClass = (Class<? extends Role>) Class
-					.forName("fr.leomelki.loupgarou.roles.R" + roleName);
+        for (Object rawEntry : parsedJson.entrySet()) {
+            final HashMap<String, Material> items = new HashMap<>();
 
-			LGCustomItems.mappings.put(matchingClass, currentMapping);
-		} catch (ClassNotFoundException e) {
-			e.printStackTrace();
-		}
-	}
+            @SuppressWarnings("unchecked") final Entry<String, HashMap<String, Material>> entry = (Entry<String, HashMap<String, Material>>) rawEntry;
+            final JSONObject currentProperties = (JSONObject) entry.getValue();
+            final String roleName = entry.getKey();
 
-	static {
-		JSONObject parsedJson = null;
+            for (Object rawProperty : currentProperties.entrySet()) {
+                @SuppressWarnings("unchecked") final Entry<String, String> property = (Entry<String, String>) rawProperty;
+                final String currentName = property.getKey();
+                final String currentMaterial = property.getValue();
 
-		try {
-			parsedJson = (JSONObject) readCustomItemsJSON();
-		} catch (Exception e) {
-			throw new RuntimeException("Failed to parse JSON file" + LGCustomItems.JSON_FILE, e);
-		}
+                items.put(currentName, Material.valueOf(currentMaterial));
+            }
 
-		for (Object rawEntry : parsedJson.entrySet()) {
-			final HashMap<String, Material> items = new HashMap<>();
+            LGCustomItems.addItem(roleName, items);
+        }
+    }
 
-			@SuppressWarnings("unchecked")
-			final Entry<String, HashMap<String, Material>> entry = (Entry<String, HashMap<String, Material>>) rawEntry;
-			final JSONObject currentProperties = (JSONObject) entry.getValue();
-			final String roleName = entry.getKey();
+    private static Object readCustomItemsJSON() throws Exception {
+        final InputStream stream = LGCustomItems.class.getClassLoader().getResourceAsStream(LGCustomItems.JSON_FILE);
+        final Reader reader = new InputStreamReader(Objects.requireNonNull(stream));
+        JSONParser jsonParser = new JSONParser();
 
-			for (Object rawProperty : currentProperties.entrySet()) {
-				@SuppressWarnings("unchecked")
-				final Entry<String, String> property = (Entry<String, String>) rawProperty;
-				final String currentName = property.getKey();
-				final String currentMaterial = property.getValue();
+        return jsonParser.parse(reader);
+    }
 
-				items.put(currentName, Material.valueOf(currentMaterial));
-			}
+    private static void addItem(final String roleName, HashMap<String, Material> currentMapping) {
+        try {
+            @SuppressWarnings("unchecked") final Class<? extends Role> matchingClass = (Class<? extends Role>) Class
+                    .forName("fr.leomelki.loupgarou.roles.R" + roleName);
 
-			LGCustomItems.addItem(roleName, items);
-		}
-	}
+            LGCustomItems.mappings.put(matchingClass, currentMapping);
+        } catch (ClassNotFoundException e) {
+            e.printStackTrace();
+        }
+    }
 
-	public static Material getItem(Role role) {
-		return mappings.get(role.getClass()).get("");
-	}
+    public static Material getItem(Role role) {
+        return mappings.get(role.getClass()).get("");
+    }
 
-	public static Material getItem(LGPlayer player, List<String> constraints) {
-		Bukkit.getPluginManager().callEvent(new LGCustomItemChangeEvent(player.getGame(), player, constraints));
+    public static Material getItem(LGPlayer player, List<String> constraints) {
+        Bukkit.getPluginManager().callEvent(new LGCustomItemChangeEvent(player.getGame(), player, constraints));
 
-		Collections.sort(constraints);
-		HashMap<String, Material> mapps = mappings.get(player.getRole().getClass());
-		
-		// Lors du développement de rôles.
-		if (mapps == null)
-			return Material.AIR;
+        Collections.sort(constraints);
+        HashMap<String, Material> mapps = mappings.get(player.getRole().getClass());
 
-		StringJoiner sj = new StringJoiner("_");
-		for (String s : constraints)
-			sj.add(s);
+        // Lors du développement de rôles.
+        if (mapps == null)
+            return Material.AIR;
 
-		return mapps.get(sj.toString());
-	}
+        StringJoiner sj = new StringJoiner("_");
+        for (String s : constraints)
+            sj.add(s);
 
-	public static Material getItem(LGPlayer player) {
-		return getItem(player, new ArrayList<String>());
-	}
+        return mapps.get(sj.toString());
+    }
 
-	public static void updateItem(LGPlayer lgp) {
-		lgp.getPlayer().getInventory().setItemInOffHand(new ItemStack(getItem(lgp)));
-		lgp.getPlayer().updateInventory();
-	}
+    public static Material getItem(LGPlayer player) {
+        return getItem(player, new ArrayList<>());
+    }
 
-	public static void updateItem(LGPlayer lgp, List<String> constraints) {
-		lgp.getPlayer().getInventory().setItemInOffHand(new ItemStack(getItem(lgp, constraints)));
-		lgp.getPlayer().updateInventory();
-	}
+    public static void updateItem(LGPlayer lgp) {
+        lgp.getPlayer().getInventory().setItemInOffHand(new ItemStack(getItem(lgp)));
+        lgp.getPlayer().updateInventory();
+    }
 
-	@RequiredArgsConstructor
-	public enum LGCustomItemsConstraints {
-		INFECTED("infecte"), 
-		MAYOR("maire"), 
-		VAMPIRE_INFECTE("vampire-infecte"), 
-		DEAD("mort");
+    public static void updateItem(LGPlayer lgp, List<String> constraints) {
+        lgp.getPlayer().getInventory().setItemInOffHand(new ItemStack(getItem(lgp, constraints)));
+        lgp.getPlayer().updateInventory();
+    }
 
-		@Getter private final String name;
-	}
+    @RequiredArgsConstructor
+    public enum LGCustomItemsConstraints {
+        INFECTED("infecte"),
+        MAYOR("maire"),
+        VAMPIRE_INFECTE("vampire-infecte"),
+        DEAD("mort");
+
+        @Getter
+        private final String name;
+    }
 
 }
