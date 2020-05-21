@@ -13,7 +13,6 @@ import fr.leomelki.loupgarou.events.*;
 import fr.leomelki.loupgarou.events.LGPlayerKilledEvent.Reason;
 import fr.leomelki.loupgarou.roles.*;
 import fr.leomelki.loupgarou.scoreboard.CustomScoreboard;
-import fr.leomelki.loupgarou.utils.ItemBuilder;
 import fr.leomelki.loupgarou.utils.MultipleValueMap;
 import fr.leomelki.loupgarou.utils.VariousUtils;
 import lombok.Getter;
@@ -84,6 +83,10 @@ public class LGGame implements Listener {
     public LGGame(int maxPlayers) {
         this.maxPlayers = maxPlayers;
         Bukkit.getPluginManager().registerEvents(this, MainLg.getInstance());
+    }
+
+    public LGGame() {
+        this.maxPlayers = 0;
     }
 
     @SuppressWarnings("deprecation")
@@ -266,7 +269,6 @@ public class LGGame implements Listener {
 
     public void updateStart() {
         if (!isStarted()) {
-
             if (inGame.size() == maxPlayers) {// Il faut que la partie soit totalement remplie pour qu'elle démarre car sinon,
                 // tous les rôles ne seraient pas distribués
                 final MainLg mainLgInstance = MainLg.getInstance();
@@ -276,6 +278,8 @@ public class LGGame implements Listener {
                 this.roleDistributor = new LGRoleDistributor(this, config, mainLgInstance.getRolesBuilder());
                 this.improvedScoreboard = new CustomScoreboard(this.inGame, shouldShowScoreboard);
                 this.improvedScoreboard.show();
+
+                mainLgInstance.setStartGame(true);
 
                 for (LGPlayer lgp : getInGame()) {
                     final String meme = mainLgInstance.getRandomStartingMeme();
@@ -685,12 +689,6 @@ public class LGGame implements Listener {
                 team.setName("you_are");
                 team.sendPacket(lgp.getPlayer());
                 LGPlayer.thePlayer(lgp.getPlayer()).join(MainLg.getInstance().getCurrentGame());
-                if (lgp.getPlayer().hasPermission("loupgarou.admin")) {
-                    lgp.getPlayer().getInventory().setItem(1,
-                            new ItemBuilder(Material.ENDER_EYE).setName("Choisir les rôles").build());
-                    lgp.getPlayer().getInventory().setItem(3,
-                            new ItemBuilder(Material.EMERALD).setName("Lancer la partie").build());
-                }
             }
     }
 

@@ -3,9 +3,7 @@ package fr.leomelki.loupgarou.cli;
 import fr.leomelki.loupgarou.classes.LGGame;
 import fr.leomelki.loupgarou.classes.LGPlayer;
 import fr.leomelki.loupgarou.classes.LGWinType;
-import fr.leomelki.loupgarou.utils.ItemBuilder;
 import org.bukkit.Bukkit;
-import org.bukkit.Material;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.bukkit.event.player.PlayerJoinEvent;
@@ -34,11 +32,6 @@ class ParserGame extends ParserAbstract {
 
         for (Player p : onlinePlayers) {
             Bukkit.getPluginManager().callEvent(new PlayerJoinEvent(p, "joinall"));
-            if (Objects.requireNonNull(p.getPlayer()).hasPermission("loupgarou.admin")) {
-                p.getPlayer().getInventory().setItem(1,
-                        new ItemBuilder(Material.ENDER_EYE).setName("Choisir les rôles").build());
-                p.getPlayer().getInventory().setItem(3, new ItemBuilder(Material.EMERALD).setName("Lancer la partie").build());
-            }
         }
     }
 

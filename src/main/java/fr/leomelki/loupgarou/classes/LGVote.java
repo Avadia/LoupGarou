@@ -280,9 +280,10 @@ public class LGVote {
                 voter.sendMessage("§6Tu as annulé ton vote.");
             }
 
-            for (LGPlayer player : viewers)
+            //TODO Nouveau système pour afficher qui vote qui
+            /*for (LGPlayer player : viewers)
                 if (player != voter)
-                    player.sendMessage(message);
+                    player.sendMessage(message);*/
         }
     }
 

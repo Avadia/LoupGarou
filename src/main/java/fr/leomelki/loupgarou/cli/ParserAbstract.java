@@ -23,6 +23,11 @@ abstract class ParserAbstract {
         sender.sendMessage("§4Erreur: Vous n'avez pas la permission...");
     }
 
+    protected void helpCommand(CommandSender sender) {
+        sender.sendMessage("§4Erreur: §cCommande incorrecte.");
+        sender.sendMessage("§4Essayez /lg §caddSpawn/end/start/nextNight/nextDay/reloadConfig/roles/joinAll/nick/unnick");
+    }
+
     protected Integer parseInteger(String raw) {
         try {
             final int parsedValue = Integer.parseInt(raw);

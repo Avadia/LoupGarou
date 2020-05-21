@@ -10,6 +10,7 @@ import com.comphenix.protocol.wrappers.EnumWrappers.ItemSlot;
 import com.comphenix.protocol.wrappers.PlayerInfoData;
 import com.comphenix.protocol.wrappers.WrappedChatComponent;
 import fr.leomelki.com.comphenix.packetwrapper.*;
+import fr.leomelki.fr.farmvivi.avadia.AvadiaListener;
 import fr.leomelki.loupgarou.classes.LGGame;
 import fr.leomelki.loupgarou.classes.LGPlayer;
 import fr.leomelki.loupgarou.classes.LGStats;
@@ -58,6 +59,12 @@ public class MainLg extends JavaPlugin {
     @Getter
     @Setter
     private LGGame currentGame;// Because for now, only one game will be playable on one server (flemme)
+    @Getter
+    @Setter
+    private boolean endGame = false;
+    @Getter
+    @Setter
+    private boolean startGame = false;
     private List<String> startingMemes;
     private LGStats stats;
 
@@ -123,7 +130,7 @@ public class MainLg extends JavaPlugin {
         }
 
         Bukkit.getConsoleSender().sendMessage("/");
-        Bukkit.getPluginManager().registerEvents(new PlayerInteractListener(rolesBuilder), this);
+        Bukkit.getPluginManager().registerEvents(new AvadiaListener(rolesBuilder), this);
         Bukkit.getPluginManager().registerEvents(new JoinListener(), this);
         Bukkit.getPluginManager().registerEvents(new CancelListener(), this);
         Bukkit.getPluginManager().registerEvents(new VoteListener(), this);

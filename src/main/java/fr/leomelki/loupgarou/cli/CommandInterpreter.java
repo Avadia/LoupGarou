@@ -31,6 +31,11 @@ public class CommandInterpreter extends ParserAbstract {
     }
 
     private void process(CommandSender sender, String[] args) {
+        if (args.length == 0) {
+            helpCommand(sender);
+            return;
+        }
+
         if (args[0].equalsIgnoreCase("roles")) {
             (new ParserRolesFixed(this)).processRoles(sender, args);
             return;
@@ -92,9 +97,7 @@ public class CommandInterpreter extends ParserAbstract {
             return;
         }
 
-        sender.sendMessage("§4Erreur: §cCommande incorrecte.");
-        sender.sendMessage(
-                "§4Essayez /lg §caddSpawn/end/start/nextNight/nextDay/reloadConfig/roles/joinAll/nick/unnick");
+        helpCommand(sender);
     }
 
     /* ========================================================================== */

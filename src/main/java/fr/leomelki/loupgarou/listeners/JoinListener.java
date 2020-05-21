@@ -7,7 +7,6 @@ import fr.leomelki.loupgarou.classes.LGPlayer;
 import fr.leomelki.loupgarou.events.LGPlayerKilledEvent.Reason;
 import org.bukkit.Bukkit;
 import org.bukkit.GameMode;
-import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -46,12 +45,6 @@ public class JoinListener implements Listener {
         LGPlayer lgp = LGPlayer.thePlayer(e.getPlayer());
         lgp.showView();
         lgp.join(MainLg.getInstance().getCurrentGame());
-        if (e.getJoinMessage() == null || !e.getJoinMessage().equals("joinall")) {
-            if (p.hasPermission("loupgarou.admin")) {
-                p.getInventory().setItem(1, new fr.leomelki.loupgarou.utils.ItemBuilder(Material.ENDER_EYE).setName("Choisir les rôles").build());
-                p.getInventory().setItem(3, new fr.leomelki.loupgarou.utils.ItemBuilder(Material.EMERALD).setName("Lancer la partie").build());
-            }
-        }
         if (noSpec)
             p.setGameMode(GameMode.ADVENTURE);
         e.setJoinMessage("");
