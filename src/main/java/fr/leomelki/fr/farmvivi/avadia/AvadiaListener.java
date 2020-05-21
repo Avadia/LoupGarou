@@ -14,8 +14,6 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
-import org.bukkit.event.player.PlayerJoinEvent;
-import org.bukkit.event.player.PlayerQuitEvent;
 import org.bukkit.event.server.ServerListPingEvent;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
@@ -48,8 +46,7 @@ public class AvadiaListener implements Listener {
             gui.setItem(35, new ItemBuilder(Material.GOLD_NUGGET).name("§aValider").make());
             p.openInventory(gui);
         } else if (item.getType().equals(Material.LEVER)) {
-            Bukkit.getOnlinePlayers().forEach(pl -> Bukkit.getPluginManager().callEvent(new PlayerQuitEvent(pl, "joinall")));
-            Bukkit.getOnlinePlayers().forEach(pl -> Bukkit.getPluginManager().callEvent(new PlayerJoinEvent(pl, "joinall")));
+            Bukkit.dispatchCommand(e.getPlayer(), "lg joinAll");
             Bukkit.dispatchCommand(e.getPlayer(), "lg start " + e.getPlayer().getDisplayName());
         }
     }
@@ -111,6 +108,8 @@ public class AvadiaListener implements Listener {
             config.set("distributionFixed.Villageois", 12);
             config.set("distributionRandom.amountOfPlayers", 12);
             MainLg.getInstance().setEndGame(false);
+            MainLg.getInstance().saveConfig();
+            MainLg.getInstance().loadConfig();
         }, 100);
     }
 
