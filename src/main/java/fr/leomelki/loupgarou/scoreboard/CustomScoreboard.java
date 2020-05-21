@@ -13,7 +13,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class CustomScoreboard {
-    private static final String DISPLAY_NAME = "§7";
+    private static final String DISPLAY_NAME = "§e§lAvadia §7⚡ §c§lLoup-Garou";
     @Getter
     private final String name = RandomString.generate(15);
     @Getter
@@ -43,7 +43,6 @@ public class CustomScoreboard {
 
     public void displayEntries(List<RolePlayers> activeRoles) {
         this.removePreexistingEntries();
-        int totalRemaingPlayers = 0;
 
         for (RolePlayers currentPlayers : activeRoles) {
             final int amountOfPlayers = currentPlayers.getAmountOfPlayers();
@@ -55,12 +54,8 @@ public class CustomScoreboard {
 
                     this.createEntry(sanitizedName, amountOfPlayers);
                 }
-
-                totalRemaingPlayers += amountOfPlayers;
             }
         }
-
-        this.createEntry("§e[TOTAL]", totalRemaingPlayers);
     }
 
     public void announce(String message, int fakeDuration) {

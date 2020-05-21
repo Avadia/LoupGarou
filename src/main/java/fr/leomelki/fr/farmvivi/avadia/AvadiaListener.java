@@ -109,6 +109,7 @@ public class AvadiaListener implements Listener {
             for (String role : getRoles().keySet())
                 config.set("distributionFixed." + role, 0);
             config.set("distributionFixed.Villageois", 12);
+            config.set("distributionRandom.amountOfPlayers", 12);
             MainLg.getInstance().setEndGame(false);
         }, 100);
     }
