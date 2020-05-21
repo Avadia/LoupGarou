@@ -82,11 +82,8 @@ public class LGGame implements Listener {
 
     public LGGame(int maxPlayers) {
         this.maxPlayers = maxPlayers;
-        Bukkit.getPluginManager().registerEvents(this, MainLg.getInstance());
-    }
 
-    public LGGame() {
-        this.maxPlayers = 0;
+        Bukkit.getPluginManager().registerEvents(this, MainLg.getInstance());
     }
 
     @SuppressWarnings("deprecation")

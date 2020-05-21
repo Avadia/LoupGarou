@@ -20,24 +20,16 @@ import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 
 import java.lang.reflect.Constructor;
-import java.lang.reflect.InvocationTargetException;
-import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
 import java.util.concurrent.atomic.AtomicInteger;
 
 public class AvadiaListener implements Listener {
     @Getter
-    private final Map<String, Role> roles = new HashMap<>();
+    private final Map<String, Constructor<? extends Role>> roles;
 
     public AvadiaListener(Map<String, Constructor<? extends Role>> roles) {
-        roles.forEach((s, constructor) -> {
-            try {
-                this.roles.put(s, constructor.newInstance());
-            } catch (InstantiationException | IllegalAccessException | InvocationTargetException e) {
-                e.printStackTrace();
-            }
-        });
+        this.roles = roles;
     }
 
     @EventHandler
@@ -154,7 +146,6 @@ public class AvadiaListener implements Listener {
         }
         item = item.name("§6" + role)
                 .lore("§6Places: §e" + amount)
-                .lore("§6Équipe: §e" + getRoles().get(role).getWinType())
                 .lore("§7 ")
                 .lore("§7§oClic gauche: +1")
                 .lore("§7§oClic droit: -1");
