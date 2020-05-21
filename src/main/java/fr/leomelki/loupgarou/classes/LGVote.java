@@ -270,10 +270,10 @@ public class LGVote {
 
                 if (changeVote) {
                     message = "§7§l" + voterName + "§6 a changé son vote pour §7§l" + targetName + "§6.";
-                    voter.sendMessage("§6Tu as changé de vote pour §7§l" + targetName + "§6.");
+                    //voter.sendMessage("§6Tu as changé de vote pour §7§l" + targetName + "§6.");
                 } else {
                     message = "§7§l" + voterName + "§6 a voté pour §7§l" + targetName + "§6.";
-                    voter.sendMessage("§6Tu as voté pour §7§l" + targetName + "§6.");
+                    //voter.sendMessage("§6Tu as voté pour §7§l" + targetName + "§6.");
                 }
             } else {
                 message = "§7§l" + voterName + "§6 a annulé son vote.";
