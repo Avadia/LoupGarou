@@ -27,7 +27,7 @@ public class JoinListener implements Listener {
         myTeam.setName(p.getName());
         myTeam.setPrefix(WrappedChatComponent.fromText(""));
         myTeam.setPlayers(Collections.singletonList(p.getName()));
-        myTeam.setMode(0);
+        myTeam.setMode(2);
         boolean noSpec = p.getGameMode() != GameMode.SPECTATOR;
         for (Player player : Bukkit.getOnlinePlayers())
             if (player != p) {
@@ -37,7 +37,7 @@ public class JoinListener implements Listener {
                 team.setName(player.getName());
                 team.setPrefix(WrappedChatComponent.fromText(""));
                 team.setPlayers(Collections.singletonList(player.getName()));
-                team.setMode(0);
+                team.setMode(2);
 
                 team.sendPacket(p);
                 myTeam.sendPacket(player);

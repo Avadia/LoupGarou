@@ -283,11 +283,12 @@ public class LGPlayer {
             getPlayer().teleport(getPlayer().getLocation());
             float speed = getPlayer().getWalkSpeed();
             getPlayer().setWalkSpeed(0.2f);
+            Player tempPlayer = getPlayer();
             new BukkitRunnable() {
                 @Override
                 public void run() {
-                    getPlayer().updateInventory();
-                    getPlayer().setWalkSpeed(speed);
+                    tempPlayer.updateInventory();
+                    tempPlayer.setWalkSpeed(speed);
                 }
             }.runTaskLater(MainLg.getInstance(), 5);
             // Et c'est bon, le joueur se voit avec un nouveau skin avec quasiment aucun
