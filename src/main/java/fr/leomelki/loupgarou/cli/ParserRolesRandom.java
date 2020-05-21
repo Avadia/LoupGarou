@@ -32,6 +32,7 @@ class ParserRolesRandom extends ParserRolesAbstract {
             }
 
             this.setPlayerSlots(sender, args);
+            return;
         }
 
         if (args[1].equalsIgnoreCase("showAll")) {
@@ -50,7 +51,7 @@ class ParserRolesRandom extends ParserRolesAbstract {
         }
 
         sender.sendMessage("\n§4Erreur: §cCommande incorrecte.");
-        sender.sendMessage("§4Essayez §c/lg roles§4 ou §c/lg roles list§4 ou §c/lg roles set <role_id/role_name> <nombre>§4");
+        sender.sendMessage("§4Essayez §c/lg random showAll/players/set");
     }
 
     /* ========================================================================== */
@@ -59,10 +60,10 @@ class ParserRolesRandom extends ParserRolesAbstract {
 
     @SuppressWarnings("ConstantConditions")
     private void setPlayerSlots(CommandSender sender, String[] args) {
-        final Integer amount = this.parseInteger(args[3]);
+        final Integer amount = this.parseInteger(args[2]);
 
         if (amount == null) {
-            sender.sendMessage("\n§4Erreur: La valeur §c'" + args[3] + "'§4 n'est pas une quantité valide de joueurs");
+            sender.sendMessage("\n§4Erreur: La valeur §c'" + args[2] + "'§4 n'est pas une quantité valide de joueurs");
         }
 
         this.setOpenedSlots(amount);

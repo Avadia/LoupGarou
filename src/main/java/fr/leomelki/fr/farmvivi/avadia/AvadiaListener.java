@@ -93,8 +93,7 @@ public class AvadiaListener implements Listener {
     @EventHandler
     public void onJoin(PlayerJoinEvent event) {
         Player player = event.getPlayer();
-        if (event.getJoinMessage() == null || !event.getJoinMessage().equals("joinall"))
-            setupItems(player);
+        setupItems(player);
     }
 
     @EventHandler
