@@ -238,7 +238,7 @@ public class LGGame implements Listener {
                 lgp.updatePrefix();
             }
 
-            broadcastMessage("§7Le joueur §8" + lgp.getFullName() + "§7 a rejoint la partie §9(§8" + inGame.size() + "§7/§8"
+            sendActionBarMessage("§7Le joueur §8" + lgp.getFullName() + "§7 a rejoint la partie §9(§8" + inGame.size() + "§7/§8"
                     + maxPlayers + "§9)");
 
             // Reset scoreboard

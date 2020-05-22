@@ -66,6 +66,7 @@ public class JoinListener implements Listener {
         }
         LGPlayer.removePlayer(p);
         lgp.remove();
+        e.setQuitMessage("");
     }
 
 }
