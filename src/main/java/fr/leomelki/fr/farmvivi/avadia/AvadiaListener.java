@@ -95,10 +95,10 @@ public class AvadiaListener implements Listener {
                 p.openInventory(gui);
             } else if (item.getType() == Material.CLOCK) {
                 if (MainLg.getInstance().getConfig().getBoolean("showScoreboard")) {
-                    MainLg.getInstance().getConfig().set("showScoreboard", "false");
+                    MainLg.getInstance().getConfig().set("showScoreboard", false);
                     p.sendMessage("§eLes rôles ne seront plus visibles.");
                 } else {
-                    MainLg.getInstance().getConfig().set("showScoreboard", "true");
+                    MainLg.getInstance().getConfig().set("showScoreboard", true);
                     p.sendMessage("§eLes rôles seront visibles.");
                 }
                 MainLg.getInstance().saveConfig();
