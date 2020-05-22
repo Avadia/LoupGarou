@@ -24,14 +24,6 @@ abstract class ParserRolesAbstract extends ParserAbstract {
 
     protected abstract void setRoleAvailability(CommandSender sender, String[] args);
 
-    protected void warnWhenRoleDistributionDontMatch(final CommandSender sender, final String prefix) {
-        if (this.roleDistribution.equals(this.expectedDistribution)) {
-            return;
-        }
-
-        sender.sendMessage(prefix + " §b'roleDistribution: " + expectedDistribution + "'§5 dans config.yml.\n/!\\ Actuellement le mode de distribution est: §b'roleDistribution: " + roleDistribution + "'§5\n");
-    }
-
     protected String parseRoleKey(String raw) {
         try {
             final int roleID = Integer.parseInt(raw);

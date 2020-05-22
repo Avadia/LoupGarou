@@ -13,6 +13,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.inventory.InventoryClickEvent;
+import org.bukkit.event.inventory.InventoryType;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.event.server.ServerListPingEvent;
 import org.bukkit.inventory.Inventory;
@@ -41,33 +42,40 @@ public class AvadiaListener implements Listener {
         if (item.getType().equals(Material.TRIPWIRE_HOOK)) {
             Player p = e.getPlayer();
 
-            Inventory gui = Bukkit.createInventory(null, 4 * 9, "Rôles");
+            Inventory gui = Bukkit.createInventory(null, 4 * 9, "Rôles (manuel)");
             getRoles().forEach((s, constructor) -> gui.setItem(index.getAndIncrement(), getItem(s)));
             gui.setItem(35, new ItemBuilder(Material.GOLD_NUGGET).name("§aValider").make());
             p.openInventory(gui);
         } else if (item.getType().equals(Material.LEVER)) {
-            Bukkit.dispatchCommand(e.getPlayer(), "lg joinAll");
-            Bukkit.dispatchCommand(e.getPlayer(), "lg start " + e.getPlayer().getDisplayName());
+            Player p = e.getPlayer();
+
+            Inventory gui = Bukkit.createInventory(null, InventoryType.HOPPER, "Lancement de la partie");
+            gui.setItem(1, new ItemBuilder(Material.SHEARS).name("§7Mode manuel").make());
+            gui.setItem(3, new ItemBuilder(Material.REDSTONE).name("§cMode automatique").make());
+            p.openInventory(gui);
         }
     }
 
     @EventHandler
     public void onInventoryClick(InventoryClickEvent e) {
         Player p = (Player) e.getWhoClicked();
-        if (e.getView().getTitle().equals("Rôles") && e.getCurrentItem() != null) {
+        if (e.getCurrentItem() == null)
+            return;
+        ItemStack item = e.getCurrentItem();
+        if (e.getView().getTitle().equals("Rôles (manuel)")) {
             AtomicInteger index = new AtomicInteger();
             AtomicInteger n = new AtomicInteger();
 
             e.setCancelled(true);
 
-            if (e.getCurrentItem().getType() == Material.GOLD_NUGGET) {
+            if (item.getType() == Material.GOLD_NUGGET) {
                 p.closeInventory();
                 Bukkit.dispatchCommand(p, "lg roles");
             } else if (e.isLeftClick()) {
                 MainLg.getInstance().getRolesBuilder().forEach((s, constructor) -> {
-                    if (s.equals(Objects.requireNonNull(e.getCurrentItem().getItemMeta()).getDisplayName().replaceFirst("§6", ""))) {
+                    if (s.equals(Objects.requireNonNull(item.getItemMeta()).getDisplayName().replaceFirst("§6", ""))) {
                         n.set(MainLg.getInstance().getConfig().getInt("distributionFixed." + s));
-                        Bukkit.dispatchCommand(p, "lg roles set " + index + " " + (n.get() + 1) + " hide");
+                        Bukkit.dispatchCommand(p, "lg roles set " + index + " " + (n.get() + 1));
                         e.setCurrentItem(getItem(s));
                         return;
                     }
@@ -75,16 +83,31 @@ public class AvadiaListener implements Listener {
                 });
             } else if (e.isRightClick()) {
                 MainLg.getInstance().getRolesBuilder().forEach((s, constructor) -> {
-                    if (s.equals(Objects.requireNonNull(e.getCurrentItem().getItemMeta()).getDisplayName().replaceFirst("§6", ""))) {
+                    if (s.equals(Objects.requireNonNull(item.getItemMeta()).getDisplayName().replaceFirst("§6", ""))) {
                         n.set(MainLg.getInstance().getConfig().getInt("distributionFixed." + s));
                         if (n.get() > 0)
-                            Bukkit.dispatchCommand(p, "lg roles set " + index + " " + (n.get() - 1) + " hide");
+                            Bukkit.dispatchCommand(p, "lg roles set " + index + " " + (n.get() - 1));
                         e.setCurrentItem(getItem(s));
                         return;
                     }
                     index.getAndIncrement();
                 });
             }
+        } else if (e.getView().getTitle().equals("Lancement de la partie")) {
+            e.setCancelled(true);
+
+            if (item.getType() == Material.SHEARS) {
+                MainLg.getInstance().getConfig().set("roleDistribution", "fixed");
+            } else if (item.getType() == Material.REDSTONE) {
+                MainLg.getInstance().getConfig().set("roleDistribution", "random");
+                Bukkit.dispatchCommand(p, "lg random players " + Bukkit.getOnlinePlayers().size());
+            }
+
+//            MainLg.getInstance().saveConfig();
+//            MainLg.getInstance().loadConfig();
+
+            Bukkit.dispatchCommand(p, "lg joinAll");
+            Bukkit.dispatchCommand(p, "lg start " + p.getName());
         }
     }
 

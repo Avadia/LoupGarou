@@ -219,7 +219,7 @@ public class LGVote {
 
     public void vote(LGPlayer voter, LGPlayer voted) {
         if (blacklisted.contains(voted)) {
-            voter.sendMessage("§cVous ne pouvez pas votre pour §7§l" + voted.getFullName() + "§c.");
+            voter.sendMessage("§cVous ne pouvez pas voter pour §7§l" + voted.getFullName() + "§c.");
             return;
         }
         if (voted == voter.getCache().get("vote"))

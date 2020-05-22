@@ -75,7 +75,7 @@ class ParserRolesRandom extends ParserRolesAbstract {
         this.instanceMainLg.saveConfig();
         this.instanceMainLg.loadConfig();
         this.printAmountOfPlayers(sender, amount);
-        sender.sendMessage("§7§oSi vous avez fini de changer les rôles, utilisez §8§o/lg joinall§7§o");
+        //sender.sendMessage("§7§oSi vous avez fini de changer les rôles, utilisez §8§o/lg joinall§7§o");
     }
 
     /* ========================================================================== */
@@ -84,8 +84,6 @@ class ParserRolesRandom extends ParserRolesAbstract {
 
     @Override
     protected void displayAvailableRoles(CommandSender sender) {
-        this.warnWhenRoleDistributionDontMatch(sender, "\n§l§5/!\\ Les valeurs qui suivent ne sont applicables qu'avec");
-
         final int amountOfPlayers = this.getOpenedSlots();
         final FileConfiguration config = this.instanceMainLg.getConfig();
         final LGRandomRoleSplit categorySplits = LGRandomRoleSplit.getCategorySplits(amountOfPlayers, config);
@@ -107,8 +105,6 @@ class ParserRolesRandom extends ParserRolesAbstract {
 
     @Override
     protected void displayAllRoles(CommandSender sender) {
-        this.warnWhenRoleDistributionDontMatch(sender, "\n§l§5/!\\ Les valeurs qui suivent ne sont applicables qu'avec");
-
         final int amountOfPlayers = this.getOpenedSlots();
         final FileConfiguration config = this.instanceMainLg.getConfig();
         final LGRandomRoleSplit categorySplits = LGRandomRoleSplit.getCategorySplits(amountOfPlayers, config);
