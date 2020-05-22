@@ -106,8 +106,8 @@ public class AvadiaListener implements Listener {
 //            MainLg.getInstance().saveConfig();
 //            MainLg.getInstance().loadConfig();
 
-            Bukkit.dispatchCommand(p, "lg joinAll");
-            Bukkit.dispatchCommand(p, "lg start " + p.getName());
+            Bukkit.dispatchCommand(Bukkit.getConsoleSender(), "lg joinAll");
+            Bukkit.dispatchCommand(Bukkit.getConsoleSender(), "lg start " + p.getName());
         }
     }
 

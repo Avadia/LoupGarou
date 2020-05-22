@@ -331,4 +331,8 @@ public class MainLg extends JavaPlugin {
             throw new RuntimeException("Failed to save stats", e);
         }
     }
+
+    public void launchGame(boolean auto) {
+
+    }
 }

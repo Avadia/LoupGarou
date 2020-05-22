@@ -24,7 +24,7 @@ class ParserGame extends ParserAbstract {
     protected void processJoinAll(CommandSender sender) {
         final Collection<? extends Player> onlinePlayers = Bukkit.getOnlinePlayers();
 
-        sender.sendMessage("\n" + onlinePlayers.size() + " joueurs ont été détectés en ligne et vont rejoindre la partie");
+        sender.sendMessage("\n§7" + onlinePlayers.size() + " joueurs ont été détectés en ligne et vont rejoindre la partie");
 
         for (Player p : onlinePlayers) {
             Bukkit.getPluginManager().callEvent(new PlayerQuitEvent(p, "joinall"));
