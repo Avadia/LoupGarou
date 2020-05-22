@@ -102,6 +102,7 @@ public class AvadiaListener implements Listener {
                     p.sendMessage("§eLes rôles seront visibles.");
                 }
                 MainLg.getInstance().saveConfig();
+                MainLg.getInstance().loadConfig();
                 p.closeInventory();
             }
         } else if (e.getView().getTitle().equals("Rôles (manuel)")) {

@@ -100,8 +100,8 @@ class ParserRolesFixed extends ParserRolesAbstract {
         this.setOpenedSlots(roleName, amount);
 
         sender.sendMessage("\n§6Il y aura §e" + amount + " §6" + roleName);
-        this.instanceMainLg.saveConfig();
-        this.instanceMainLg.loadConfig();
+//        this.instanceMainLg.saveConfig();
+//        this.instanceMainLg.loadConfig();
         //sender.sendMessage("§7§oSi vous avez fini de changer les rôles, utilisez §8§o/lg joinall§7§o");
     }
 
