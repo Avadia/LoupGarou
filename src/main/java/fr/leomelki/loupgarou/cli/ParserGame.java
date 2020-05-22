@@ -52,6 +52,8 @@ class ParserGame extends ParserAbstract {
 
         if (lgp.getGame() == null) {
             sender.sendMessage(PLAYER_ERROR_PREFIX + lgp.getName() + "§c n'est pas dans une partie.");
+            Bukkit.dispatchCommand(Bukkit.getConsoleSender(), "lg joinAll");
+            Bukkit.dispatchCommand(Bukkit.getConsoleSender(), "lg start " + lgp.getName());
             return;
         }
 
