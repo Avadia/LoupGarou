@@ -34,7 +34,6 @@ public class AvadiaListener implements Listener {
 
     @EventHandler
     public void onInteract(PlayerInteractEvent e) {
-        AtomicInteger index = new AtomicInteger();
         ItemStack item = e.getItem();
 
         if (item == null) return;
@@ -42,9 +41,15 @@ public class AvadiaListener implements Listener {
         if (item.getType().equals(Material.TRIPWIRE_HOOK)) {
             Player p = e.getPlayer();
 
-            Inventory gui = Bukkit.createInventory(null, 4 * 9, "Rôles (manuel)");
-            getRoles().forEach((s, constructor) -> gui.setItem(index.getAndIncrement(), getItem(s)));
-            gui.setItem(35, new ItemBuilder(Material.GOLD_NUGGET).name("§aValider").make());
+            Inventory gui = Bukkit.createInventory(null, InventoryType.HOPPER, "Paramètres de la partie");
+            gui.setItem(1, new ItemBuilder(Material.TOTEM_OF_UNDYING).name("§6Choisir les rôles (manuel)").make());
+            ItemBuilder scoreboard = new ItemBuilder(Material.CLOCK);
+            if (MainLg.getInstance().getConfig().getBoolean("showScoreboard")) {
+                scoreboard.name("§eCacher les rôles");
+            } else {
+                scoreboard.name("§eAfficher les rôles");
+            }
+            gui.setItem(3, scoreboard.make());
             p.openInventory(gui);
         } else if (item.getType().equals(Material.LEVER)) {
             Player p = e.getPlayer();
@@ -62,7 +67,44 @@ public class AvadiaListener implements Listener {
         if (e.getCurrentItem() == null)
             return;
         ItemStack item = e.getCurrentItem();
-        if (e.getView().getTitle().equals("Rôles (manuel)")) {
+        if (e.getView().getTitle().equals("Lancement de la partie")) {
+            e.setCancelled(true);
+
+            if (item.getType() == Material.SHEARS) {
+                MainLg.getInstance().getConfig().set("roleDistribution", "fixed");
+                MainLg.getInstance().saveConfig();
+                MainLg.getInstance().loadConfig();
+            } else if (item.getType() == Material.REDSTONE) {
+                MainLg.getInstance().getConfig().set("roleDistribution", "random");
+                Bukkit.dispatchCommand(p, "lg random players " + Bukkit.getOnlinePlayers().size());
+            }
+
+//            MainLg.getInstance().saveConfig();
+//            MainLg.getInstance().loadConfig();
+
+            Bukkit.dispatchCommand(Bukkit.getConsoleSender(), "lg joinAll");
+            Bukkit.dispatchCommand(Bukkit.getConsoleSender(), "lg start " + p.getName());
+        } else if (e.getView().getTitle().equals("Paramètres de la partie")) {
+            e.setCancelled(true);
+
+            if (item.getType() == Material.TOTEM_OF_UNDYING) {
+                AtomicInteger index = new AtomicInteger();
+                Inventory gui = Bukkit.createInventory(null, 4 * 9, "Rôles (manuel)");
+                getRoles().forEach((s, constructor) -> gui.setItem(index.getAndIncrement(), getItem(s)));
+                gui.setItem(35, new ItemBuilder(Material.GOLD_NUGGET).name("§aValider").make());
+                p.openInventory(gui);
+            } else if (item.getType() == Material.CLOCK) {
+                if (MainLg.getInstance().getConfig().getBoolean("showScoreboard")) {
+                    MainLg.getInstance().getConfig().set("showScoreboard", "false");
+                    p.sendMessage("§eLes rôles ne seront plus visibles.");
+                } else {
+                    MainLg.getInstance().getConfig().set("showScoreboard", "true");
+                    p.sendMessage("§eLes rôles seront visibles.");
+                }
+                MainLg.getInstance().saveConfig();
+                p.closeInventory();
+            }
+        } else if (e.getView().getTitle().equals("Rôles (manuel)")) {
             AtomicInteger index = new AtomicInteger();
             AtomicInteger n = new AtomicInteger();
 
@@ -93,21 +135,6 @@ public class AvadiaListener implements Listener {
                     index.getAndIncrement();
                 });
             }
-        } else if (e.getView().getTitle().equals("Lancement de la partie")) {
-            e.setCancelled(true);
-
-            if (item.getType() == Material.SHEARS) {
-                MainLg.getInstance().getConfig().set("roleDistribution", "fixed");
-            } else if (item.getType() == Material.REDSTONE) {
-                MainLg.getInstance().getConfig().set("roleDistribution", "random");
-                Bukkit.dispatchCommand(p, "lg random players " + Bukkit.getOnlinePlayers().size());
-            }
-
-//            MainLg.getInstance().saveConfig();
-//            MainLg.getInstance().loadConfig();
-
-            Bukkit.dispatchCommand(Bukkit.getConsoleSender(), "lg joinAll");
-            Bukkit.dispatchCommand(Bukkit.getConsoleSender(), "lg start " + p.getName());
         }
     }
 
@@ -154,8 +181,8 @@ public class AvadiaListener implements Listener {
 
     private void setupItems(Player player) {
         if (player.hasPermission("loupgarou.admin")) {
-            player.getInventory().setItem(7, new ItemBuilder(Material.TRIPWIRE_HOOK).name("Choisir les rôles").make());
-            player.getInventory().setItem(1, new ItemBuilder(Material.LEVER).name("Lancer la partie").make());
+            player.getInventory().setItem(7, new ItemBuilder(Material.TRIPWIRE_HOOK).name("§6Paramètres de la partie").make());
+            player.getInventory().setItem(1, new ItemBuilder(Material.LEVER).name("§aLancer la partie").make());
         }
     }
 
