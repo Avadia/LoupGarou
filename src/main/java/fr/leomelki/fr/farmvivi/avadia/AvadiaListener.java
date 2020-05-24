@@ -156,6 +156,7 @@ public class AvadiaListener implements Listener {
                 config.set("distributionFixed." + role, 0);
             config.set("distributionFixed.Villageois", 12);
             config.set("distributionRandom.amountOfPlayers", 12);
+            config.set("showScoreboard", true);
             MainLg.getInstance().setEndGame(false);
             MainLg.getInstance().saveConfig();
             MainLg.getInstance().loadConfig();

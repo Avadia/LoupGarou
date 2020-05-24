@@ -282,6 +282,7 @@ public class LGGame implements Listener {
                     if (meme != null) {
                         lgp.sendMessage(meme);
                     }
+                    lgp.sendMessage("§c§lATTENTION: Ne révélez pas votre rôle durant la partie !");
                 }
 
                 if (startingTask == null) {
