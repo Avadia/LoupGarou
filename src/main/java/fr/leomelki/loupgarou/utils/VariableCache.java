@@ -6,7 +6,10 @@ public class VariableCache {
     private final HashMap<String, Object> cache = new HashMap<>();
 
     public boolean getBoolean(String key) {
-        return Boolean.parseBoolean(get(key));
+        Object object = get(key);
+        if (object instanceof Boolean)
+            return (boolean) object;
+        return object != null;
     }
 
     public void set(String key, Object value) {

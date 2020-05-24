@@ -60,7 +60,6 @@ public class LGGame implements Listener {
     @Setter
     boolean ended;
     boolean isPeopleVote = false;
-    @Getter
     private List<Role> roles;
     @Getter
     private boolean started = false;
@@ -650,7 +649,6 @@ public class LGGame implements Listener {
         cancelWait();// Also avoid bugs
         ended = true;
 
-        MainLg.getInstance().saveStats(winType);
         this.showcaseVillage(winners, winType);
 
         broadcastSpacer();
@@ -946,6 +944,12 @@ public class LGGame implements Listener {
         if (doEndGame && event.getWinType() != LGWinType.NONE)
             endGame(event.getWinType());
         return event.getWinType() != LGWinType.NONE;
+    }
+
+    public List<Role> getRoles() {
+        if (roles == null)
+            return this.roleDistributor.getRoles();
+        return roles;
     }
 
     public interface TextGenerator {

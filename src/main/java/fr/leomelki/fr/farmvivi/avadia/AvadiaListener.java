@@ -79,11 +79,9 @@ public class AvadiaListener implements Listener {
                 Bukkit.dispatchCommand(p, "lg random players " + Bukkit.getOnlinePlayers().size());
             }
 
-//            MainLg.getInstance().saveConfig();
-//            MainLg.getInstance().loadConfig();
+            Bukkit.dispatchCommand(p, "lg joinAll");
+            Bukkit.dispatchCommand(p, "lg start " + p.getName());
 
-            Bukkit.dispatchCommand(Bukkit.getConsoleSender(), "lg joinAll");
-            Bukkit.dispatchCommand(Bukkit.getConsoleSender(), "lg start " + p.getName());
         } else if (e.getView().getTitle().equals("Paramètres de la partie")) {
             e.setCancelled(true);
 

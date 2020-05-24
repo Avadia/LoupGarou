@@ -42,7 +42,7 @@ public class RSorciere extends Role {
             meta.setDisplayName("§7§lNe rien faire");
         }
         items[1].setItemMeta(meta);
-        items[2] = new ItemStack(Material.LIGHT_BLUE_DYE, 1);
+        items[2] = new ItemStack(Material.GRAY_DYE, 1);
         meta = items[2].getItemMeta();
         if (meta != null) {
             meta.setDisplayName("§c§lPotion de mort");

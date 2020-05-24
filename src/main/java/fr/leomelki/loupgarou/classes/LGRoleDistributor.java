@@ -3,6 +3,7 @@ package fr.leomelki.loupgarou.classes;
 import fr.leomelki.com.comphenix.packetwrapper.WrapperPlayServerUpdateHealth;
 import fr.leomelki.loupgarou.MainLg;
 import fr.leomelki.loupgarou.roles.Role;
+import lombok.Getter;
 import org.bukkit.configuration.file.FileConfiguration;
 
 import java.lang.reflect.Constructor;
@@ -16,6 +17,7 @@ import java.util.Objects;
 public class LGRoleDistributor {
     private final LGGame game;
     private final List<LGPlayer> players;
+    @Getter
     private final ArrayList<Role> roles = new ArrayList<>();
     private final FileConfiguration config;
     private final Map<String, Constructor<? extends Role>> rolesBuilder;

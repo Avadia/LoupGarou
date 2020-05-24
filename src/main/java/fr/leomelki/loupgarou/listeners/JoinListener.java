@@ -4,7 +4,9 @@ import com.comphenix.protocol.wrappers.WrappedChatComponent;
 import fr.leomelki.com.comphenix.packetwrapper.WrapperPlayServerScoreboardTeam;
 import fr.leomelki.loupgarou.MainLg;
 import fr.leomelki.loupgarou.classes.LGPlayer;
+import fr.leomelki.loupgarou.events.JoinEvent;
 import fr.leomelki.loupgarou.events.LGPlayerKilledEvent.Reason;
+import fr.leomelki.loupgarou.events.QuitEvent;
 import org.bukkit.Bukkit;
 import org.bukkit.GameMode;
 import org.bukkit.entity.Player;
@@ -17,9 +19,21 @@ import org.bukkit.potion.PotionEffectType;
 import java.util.Collections;
 
 public class JoinListener implements Listener {
-    @SuppressWarnings("deprecation")
     @EventHandler
     public void onJoin(PlayerJoinEvent e) {
+        Bukkit.getPluginManager().callEvent(new JoinEvent(e.getPlayer(), "is connected"));
+        e.setJoinMessage("");
+    }
+
+    @EventHandler
+    public void onJoin(PlayerQuitEvent e) {
+        Bukkit.getPluginManager().callEvent(new QuitEvent(e.getPlayer(), "is disconnected"));
+        e.setQuitMessage("");
+    }
+
+    @SuppressWarnings("deprecation")
+    @EventHandler
+    public void onJoin(JoinEvent e) {
         Player p = e.getPlayer();
 
         WrapperPlayServerScoreboardTeam myTeam = new WrapperPlayServerScoreboardTeam();
@@ -54,7 +68,7 @@ public class JoinListener implements Listener {
     }
 
     @EventHandler
-    public void onLeave(PlayerQuitEvent e) {
+    public void onLeave(QuitEvent e) {
         Player p = e.getPlayer();
         LGPlayer lgp = LGPlayer.thePlayer(p);
         if (lgp.getGame() != null) {

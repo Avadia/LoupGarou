@@ -270,10 +270,10 @@ public class LGVote {
 
                 if (changeVote) {
                     message = "§7§l" + voterName + "§6 a changé son vote pour §7§l" + targetName + "§6.";
-                    //voter.sendMessage("§6Tu as changé de vote pour §7§l" + targetName + "§6.");
+                    voter.sendMessage("§6Tu as changé de vote pour §7§l" + targetName + "§6.");
                 } else {
                     message = "§7§l" + voterName + "§6 a voté pour §7§l" + targetName + "§6.";
-                    //voter.sendMessage("§6Tu as voté pour §7§l" + targetName + "§6.");
+                    voter.sendMessage("§6Tu as voté pour §7§l" + targetName + "§6.");
                 }
             } else {
                 message = "§7§l" + voterName + "§6 a annulé son vote.";
@@ -281,9 +281,9 @@ public class LGVote {
             }
 
             //TODO Nouveau système pour afficher qui vote qui
-            /*for (LGPlayer player : viewers)
+            for (LGPlayer player : viewers)
                 if (player != voter)
-                    player.sendMessage(message);*/
+                    player.sendMessage(message);
         }
     }
 
@@ -380,7 +380,6 @@ public class LGVote {
             look.sendPacket(to.getPlayer());
 
             new BukkitRunnable() {
-
                 @Override
                 public void run() {
                     WrapperPlayServerEntityEquipment equip = new WrapperPlayServerEntityEquipment();

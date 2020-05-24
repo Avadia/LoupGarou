@@ -13,8 +13,6 @@ import fr.leomelki.com.comphenix.packetwrapper.*;
 import fr.leomelki.fr.farmvivi.avadia.AvadiaListener;
 import fr.leomelki.loupgarou.classes.LGGame;
 import fr.leomelki.loupgarou.classes.LGPlayer;
-import fr.leomelki.loupgarou.classes.LGStats;
-import fr.leomelki.loupgarou.classes.LGWinType;
 import fr.leomelki.loupgarou.cli.CommandInterpreter;
 import fr.leomelki.loupgarou.events.LGSkinLoadEvent;
 import fr.leomelki.loupgarou.events.LGUpdatePrefixEvent;
@@ -66,7 +64,6 @@ public class MainLg extends JavaPlugin {
     @Setter
     private boolean startGame = false;
     private List<String> startingMemes;
-    private LGStats stats;
 
     public static MainLg getInstance() {
         return instance;
@@ -114,12 +111,6 @@ public class MainLg extends JavaPlugin {
         }
 
         loadConfig();
-
-        try {
-            this.stats = new LGStats(config, getDataFolder(), rolesBuilder.keySet());
-        } catch (IOException e) {
-            throw new RuntimeException("Failed to load or create stats file", e);
-        }
 
         final File f = new File(getDataFolder(), "nicks.yml");
         nicksFile = YamlConfiguration.loadConfiguration(f);
@@ -322,17 +313,5 @@ public class MainLg extends JavaPlugin {
         } catch (NoSuchMethodException | SecurityException e) {
             e.printStackTrace();
         }
-    }
-
-    public void saveStats(LGWinType winType) {
-        try {
-            this.stats.saveRound(winType);
-        } catch (IOException e) {
-            throw new RuntimeException("Failed to save stats", e);
-        }
-    }
-
-    public void launchGame(boolean auto) {
-
     }
 }

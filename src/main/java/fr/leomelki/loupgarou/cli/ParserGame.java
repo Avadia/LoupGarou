@@ -3,11 +3,11 @@ package fr.leomelki.loupgarou.cli;
 import fr.leomelki.loupgarou.classes.LGGame;
 import fr.leomelki.loupgarou.classes.LGPlayer;
 import fr.leomelki.loupgarou.classes.LGWinType;
+import fr.leomelki.loupgarou.events.JoinEvent;
+import fr.leomelki.loupgarou.events.QuitEvent;
 import org.bukkit.Bukkit;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
-import org.bukkit.event.player.PlayerJoinEvent;
-import org.bukkit.event.player.PlayerQuitEvent;
 
 import java.util.Collection;
 import java.util.Objects;
@@ -27,11 +27,11 @@ class ParserGame extends ParserAbstract {
         sender.sendMessage("\n§7" + onlinePlayers.size() + " joueurs ont été détectés en ligne et vont rejoindre la partie");
 
         for (Player p : onlinePlayers) {
-            Bukkit.getPluginManager().callEvent(new PlayerQuitEvent(p, "joinall"));
+            Bukkit.getPluginManager().callEvent(new QuitEvent(p, "joinall"));
         }
 
         for (Player p : onlinePlayers) {
-            Bukkit.getPluginManager().callEvent(new PlayerJoinEvent(p, "joinall"));
+            Bukkit.getPluginManager().callEvent(new JoinEvent(p, "joinall"));
         }
     }
 
@@ -52,10 +52,6 @@ class ParserGame extends ParserAbstract {
 
         if (lgp.getGame() == null) {
             sender.sendMessage(PLAYER_ERROR_PREFIX + lgp.getName() + "§c n'est pas dans une partie.");
-            this.instanceMainLg.saveConfig();
-            this.instanceMainLg.loadConfig();
-            Bukkit.dispatchCommand(Bukkit.getConsoleSender(), "lg joinAll");
-            Bukkit.dispatchCommand(Bukkit.getConsoleSender(), "lg start " + player.getName());
             return;
         }
 
