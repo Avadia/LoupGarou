@@ -55,7 +55,8 @@ public class JoinListener implements Listener {
                 team.sendPacket(p);
                 myTeam.sendPacket(player);
             }
-        p.setFoodLevel(6);
+        p.setSaturation(10000);
+        p.setFoodLevel(10000);
         LGPlayer lgp = LGPlayer.thePlayer(e.getPlayer());
         lgp.showView();
         lgp.join(MainLg.getInstance().getCurrentGame());
@@ -64,7 +65,6 @@ public class JoinListener implements Listener {
         e.setJoinMessage("");
         p.removePotionEffect(PotionEffectType.JUMP);
         p.removePotionEffect(PotionEffectType.INVISIBILITY);
-        p.setWalkSpeed(0.2f);
     }
 
     @EventHandler

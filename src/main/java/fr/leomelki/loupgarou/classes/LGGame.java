@@ -281,6 +281,9 @@ public class LGGame implements Listener {
                     final String meme = mainLgInstance.getRandomStartingMeme();
                     if (meme != null) {
                         lgp.sendMessage(meme);
+                        lgp.getPlayer().setSaturation(0f);
+                        lgp.getPlayer().setFoodLevel(6);
+                        lgp.getPlayer().setWalkSpeed(0.2f);
                     }
                     lgp.sendMessage("§c§lATTENTION: Ne révélez pas votre rôle durant la partie !");
                 }
