@@ -14,7 +14,7 @@
 	<properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
-        <spigot.version>1.15.2-R0.1-SNAPSHOT</spigot.version>
+        <spigot.version>1.12.2-R0.1-SNAPSHOT</spigot.version>
         <source.directory>src/main/java</source.directory>
     </properties>
 
@@ -126,7 +126,7 @@
 		<dependency>
 			<groupId>com.comphenix.protocol</groupId>
 			<artifactId>ProtocolLib</artifactId>
-			<version>4.5.0</version>
+			<version>4.5.1</version>
 			<scope>compile</scope>
 		</dependency>
 		<dependency>

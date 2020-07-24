@@ -19,13 +19,13 @@ import fr.leomelki.loupgarou.utils.VariableCache;
 import fr.leomelki.loupgarou.utils.VariousUtils;
 import lombok.Getter;
 import lombok.Setter;
-import net.minecraft.server.v1_15_R1.DimensionManager;
-import net.minecraft.server.v1_15_R1.EnumGamemode;
-import net.minecraft.server.v1_15_R1.PacketPlayOutRespawn;
-import net.minecraft.server.v1_15_R1.WorldType;
+import net.minecraft.server.v1_12_R1.EnumDifficulty;
+import net.minecraft.server.v1_12_R1.EnumGamemode;
+import net.minecraft.server.v1_12_R1.PacketPlayOutRespawn;
+import net.minecraft.server.v1_12_R1.WorldType;
 import org.bukkit.GameMode;
 import org.bukkit.Location;
-import org.bukkit.craftbukkit.v1_15_R1.entity.CraftPlayer;
+import org.bukkit.craftbukkit.v1_12_R1.entity.CraftPlayer;
 import org.bukkit.entity.Player;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
@@ -182,7 +182,7 @@ public class LGPlayer {
                         WrapperPlayServerScoreboardTeam team = new WrapperPlayServerScoreboardTeam();
                         team.setMode(2);
                         team.setName(lgp.getName(true));
-                        team.setPrefix(WrappedChatComponent.fromText(""));
+                        team.setPrefix("");
                         team.setPlayers(Collections.singletonList(lgp.getName(true)));
                         team.sendPacket(getPlayer());
 
@@ -216,7 +216,7 @@ public class LGPlayer {
                 WrapperPlayServerScoreboardTeam team = new WrapperPlayServerScoreboardTeam();
                 team.setMode(2);
                 team.setName(getName(true));
-                team.setPrefix(WrappedChatComponent.fromText("DANG YO"));
+                team.setPrefix("DANG YO");
                 team.setPlayers(meList);
                 team.sendPacket(lgp.getPlayer());
             }
@@ -275,7 +275,7 @@ public class LGPlayer {
             infos.sendPacket(getPlayer());
             // Pour qu'il voit son skin changer (sa main et en f5), on lui dit qu'il respawn
             // (alors qu'il n'est pas mort mais ça marche quand même mdr)
-            PacketPlayOutRespawn respawn = new PacketPlayOutRespawn(DimensionManager.OVERWORLD, 0, WorldType.NORMAL,
+            PacketPlayOutRespawn respawn = new PacketPlayOutRespawn(0, EnumDifficulty.NORMAL, WorldType.NORMAL,
                     EnumGamemode.ADVENTURE);
             ((CraftPlayer) getPlayer()).getHandle().playerConnection.sendPacket(respawn);
             // Enfin, on le téléporte à sa potion actuelle car sinon il se verra dans le

@@ -1,6 +1,5 @@
 package fr.leomelki.loupgarou.scoreboard;
 
-import com.comphenix.protocol.wrappers.WrappedChatComponent;
 import fr.leomelki.com.comphenix.packetwrapper.WrapperPlayServerScoreboardDisplayObjective;
 import fr.leomelki.com.comphenix.packetwrapper.WrapperPlayServerScoreboardObjective;
 import fr.leomelki.loupgarou.classes.LGPlayer;
@@ -67,7 +66,7 @@ public class CustomScoreboard {
         WrapperPlayServerScoreboardObjective objective = new WrapperPlayServerScoreboardObjective();
         objective.setMode(0);
         objective.setName(name);
-        objective.setDisplayName(WrappedChatComponent.fromText(DISPLAY_NAME));
+        objective.setDisplayName(DISPLAY_NAME);
 
         WrapperPlayServerScoreboardDisplayObjective display = new WrapperPlayServerScoreboardDisplayObjective();
         display.setPosition(1);

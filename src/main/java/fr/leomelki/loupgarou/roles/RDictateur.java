@@ -11,7 +11,7 @@ import fr.leomelki.loupgarou.events.LGPlayerKilledEvent.Reason;
 import fr.leomelki.loupgarou.events.LGVoteEvent;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
-import org.bukkit.craftbukkit.v1_15_R1.inventory.CraftInventoryCustom;
+import org.bukkit.craftbukkit.v1_12_R1.inventory.CraftInventoryCustom;
 import org.bukkit.entity.Player;
 import org.bukkit.event.Cancellable;
 import org.bukkit.event.EventHandler;
@@ -38,7 +38,7 @@ public class RDictateur extends Role {
             meta.setLore(Collections.singletonList("§8Passez votre tour"));
         }
         items[3].setItemMeta(meta);
-        items[5] = new ItemStack(Material./* DIAMOND_SWORD */GUNPOWDER);
+        items[5] = new ItemStack(Material./* DIAMOND_SWORD */SULPHUR);
         meta = items[5].getItemMeta();
         if (meta != null) {
             meta.setDisplayName("§e§lCoup d'État");

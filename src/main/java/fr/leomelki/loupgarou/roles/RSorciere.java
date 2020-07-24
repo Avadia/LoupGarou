@@ -6,8 +6,9 @@ import fr.leomelki.loupgarou.classes.LGGame;
 import fr.leomelki.loupgarou.classes.LGPlayer;
 import fr.leomelki.loupgarou.events.LGPlayerKilledEvent.Reason;
 import org.bukkit.Bukkit;
+import org.bukkit.DyeColor;
 import org.bukkit.Material;
-import org.bukkit.craftbukkit.v1_15_R1.inventory.CraftInventoryCustom;
+import org.bukkit.craftbukkit.v1_12_R1.inventory.CraftInventoryCustom;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.inventory.InventoryClickEvent;
@@ -29,7 +30,7 @@ public class RSorciere extends Role {
     private static final ItemStack cancel;
 
     static {
-        items[0] = new ItemStack(Material.PURPLE_DYE, 1);
+        items[0] = new ItemStack(Material.INK_SACK, 1, DyeColor.PURPLE.getDyeData());
         ItemMeta meta = items[0].getItemMeta();
         if (meta != null) {
             meta.setDisplayName("§a§lPotion de vie");
@@ -42,7 +43,7 @@ public class RSorciere extends Role {
             meta.setDisplayName("§7§lNe rien faire");
         }
         items[1].setItemMeta(meta);
-        items[2] = new ItemStack(Material.GRAY_DYE, 1);
+        items[2] = new ItemStack(Material.INK_SACK, 1, DyeColor.GRAY.getDyeData());
         meta = items[2].getItemMeta();
         if (meta != null) {
             meta.setDisplayName("§c§lPotion de mort");

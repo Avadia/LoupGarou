@@ -1,7 +1,6 @@
 package fr.leomelki.loupgarou.scoreboard;
 
 import com.comphenix.protocol.wrappers.EnumWrappers.ScoreboardAction;
-import com.comphenix.protocol.wrappers.WrappedChatComponent;
 import fr.leomelki.com.comphenix.packetwrapper.WrapperPlayServerScoreboardScore;
 import fr.leomelki.com.comphenix.packetwrapper.WrapperPlayServerScoreboardTeam;
 import fr.leomelki.loupgarou.classes.LGPlayer;
@@ -13,7 +12,7 @@ public class CustomScoreboardEntry {
     private final CustomScoreboard scoreboard;
     private final String name;
     private final String scoreboardName;
-    private WrappedChatComponent prefix;
+    private String prefix;
 
     public CustomScoreboardEntry(CustomScoreboard scoreboard, String rawName, int amount) {
         this.amount = amount;
@@ -74,7 +73,7 @@ public class CustomScoreboardEntry {
             suffix = "§" + colorCode + rawName.substring(limit);
         }
 
-        this.prefix = WrappedChatComponent.fromText(sringifiedPrefix);
+        this.prefix = sringifiedPrefix;
 
         return suffix;
     }

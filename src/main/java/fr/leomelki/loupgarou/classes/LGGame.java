@@ -578,7 +578,7 @@ public class LGGame implements Listener {
 
             VariousUtils.setWarning(killed.getPlayer(), true);
 
-            killed.getPlayer().getInventory().setHelmet(new ItemStack(Material.CARVED_PUMPKIN));
+            killed.getPlayer().getInventory().setHelmet(new ItemStack(Material.PUMPKIN));
 
             LGCustomItems.updateItem(killed);
 
