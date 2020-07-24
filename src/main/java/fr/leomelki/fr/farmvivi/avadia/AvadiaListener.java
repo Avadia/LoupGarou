@@ -87,7 +87,7 @@ public class AvadiaListener implements Listener {
             case "Paramètres de la partie":
                 e.setCancelled(true);
 
-                if (item.getType() == Material.SKULL) {
+                if (item.getType() == Material.SKULL_ITEM) {
                     AtomicInteger index = new AtomicInteger();
                     Inventory gui = Bukkit.createInventory(null, 4 * 9, "Rôles (manuel)");
                     getRoles().forEach((s, constructor) -> gui.setItem(index.getAndIncrement(), getItem(s)));
