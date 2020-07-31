@@ -16,6 +16,11 @@ public class RCorbeau extends Role {
     }
 
     @Override
+    public String getRawName() {
+        return "Corbeau";
+    }
+
+    @Override
     public RoleType getType() {
         return RoleType.VILLAGER;
     }

@@ -17,6 +17,11 @@ public class RChaperonRouge extends Role {
     }
 
     @Override
+    public String getRawName() {
+        return "Bourreau";
+    }
+
+    @Override
     public RoleType getType() {
         return RoleType.VILLAGER;
     }

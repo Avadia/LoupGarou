@@ -36,6 +36,11 @@ public class RCupidon extends Role {
     }
 
     @Override
+    public String getRawName() {
+        return "Cupidon";
+    }
+
+    @Override
     public RoleType getType() {
         return RoleType.VILLAGER;
     }
@@ -173,7 +178,6 @@ public class RCupidon extends Role {
         meta.sendPacket(to.getPlayer());
 
         new BukkitRunnable() {
-
             @Override
             public void run() {
                 WrapperPlayServerEntityEquipment equip = new WrapperPlayServerEntityEquipment();

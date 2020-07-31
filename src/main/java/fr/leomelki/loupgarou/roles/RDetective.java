@@ -11,6 +11,11 @@ public class RDetective extends Role {
     }
 
     @Override
+    public String getRawName() {
+        return "Detective";
+    }
+
+    @Override
     public RoleType getType() {
         return RoleType.VILLAGER;
     }

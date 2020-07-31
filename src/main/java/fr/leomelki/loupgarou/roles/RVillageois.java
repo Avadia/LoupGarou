@@ -8,6 +8,11 @@ public class RVillageois extends Role {
     }
 
     @Override
+    public String getRawName() {
+        return "Villageois";
+    }
+
+    @Override
     public RoleType getType() {
         return RoleType.VILLAGER;
     }

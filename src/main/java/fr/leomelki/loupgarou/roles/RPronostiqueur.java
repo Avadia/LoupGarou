@@ -9,6 +9,11 @@ public class RPronostiqueur extends Role {
     }
 
     @Override
+    public String getRawName() {
+        return "Pronostiqueur";
+    }
+
+    @Override
     public RoleType getType() {
         return RoleType.VILLAGER;
     }

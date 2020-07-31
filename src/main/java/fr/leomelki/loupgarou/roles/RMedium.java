@@ -14,6 +14,11 @@ public class RMedium extends Role {
     }
 
     @Override
+    public String getRawName() {
+        return "Medium";
+    }
+
+    @Override
     public RoleType getType() {
         return RoleType.VILLAGER;
     }

@@ -25,7 +25,7 @@ public class JoinListener implements Listener {
     }
 
     @EventHandler
-    public void onJoin(PlayerQuitEvent e) {
+    public void onQuit(PlayerQuitEvent e) {
         Bukkit.getPluginManager().callEvent(new QuitEvent(e.getPlayer(), "is disconnected"));
         e.setQuitMessage("");
     }
@@ -81,5 +81,4 @@ public class JoinListener implements Listener {
         lgp.remove();
         e.setQuitMessage("");
     }
-
 }

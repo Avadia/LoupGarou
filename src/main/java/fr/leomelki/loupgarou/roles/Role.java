@@ -41,6 +41,8 @@ public abstract class Role implements Listener {
         }
     }
 
+    public abstract String getRawName();
+
     public abstract String getName(int amount);
 
     public abstract String getName();

@@ -34,14 +34,14 @@ public class RPyromane extends Role {
     static ItemStack nothing;
 
     static {
-        cancel = new ItemStack(Material.IRON_NUGGET);
+        cancel = new ItemStack(Material.BARRIER);
         ItemMeta meta = cancel.getItemMeta();
         if (meta != null) {
             meta.setDisplayName("§7§lAnnuler");
             meta.setLore(Collections.singletonList("§8Rouvrir le menu"));
         }
         cancel.setItemMeta(meta);
-        nothing = new ItemStack(Material.IRON_NUGGET);
+        nothing = new ItemStack(Material.BARRIER);
         meta = nothing.getItemMeta();
         if (meta != null) {
             meta.setDisplayName("§7§lNe rien faire");
@@ -69,6 +69,11 @@ public class RPyromane extends Role {
 
     public RPyromane(LGGame game) {
         super(game);
+    }
+
+    @Override
+    public String getRawName() {
+        return "Pyromane";
     }
 
     @Override

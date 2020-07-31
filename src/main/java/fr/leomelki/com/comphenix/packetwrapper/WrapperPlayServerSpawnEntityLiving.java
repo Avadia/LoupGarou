@@ -68,6 +68,15 @@ public class WrapperPlayServerSpawnEntityLiving extends AbstractPacket {
     }
 
     /**
+     * Set entity ID.
+     *
+     * @param value - new value.
+     */
+    public void setEntityID(int value) {
+        handle.getIntegers().write(0, value);
+    }
+
+    /**
      * Retrieve the entity that will be spawned.
      *
      * @param world - the current world of the entity.
@@ -93,15 +102,6 @@ public class WrapperPlayServerSpawnEntityLiving extends AbstractPacket {
 
     public void setUniqueId(UUID value) {
         handle.getUUIDs().write(0, value);
-    }
-
-    /**
-     * Set entity ID.
-     *
-     * @param value - new value.
-     */
-    public void setEntityID(int value) {
-        handle.getIntegers().write(0, value);
     }
 
     /**

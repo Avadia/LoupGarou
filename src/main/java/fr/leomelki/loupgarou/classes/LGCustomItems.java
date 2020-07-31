@@ -1,105 +1,207 @@
 package fr.leomelki.loupgarou.classes;
 
+import fr.leomelki.fr.farmvivi.avadia.ItemBuilder;
+import fr.leomelki.loupgarou.MainLg;
 import fr.leomelki.loupgarou.events.LGCustomItemChangeEvent;
 import fr.leomelki.loupgarou.roles.Role;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
-import org.bukkit.inventory.ItemStack;
-import org.json.simple.JSONObject;
-import org.json.simple.parser.JSONParser;
+import org.bukkit.entity.Player;
+import org.bukkit.map.MapCanvas;
+import org.bukkit.map.MapRenderer;
+import org.bukkit.map.MapView;
 
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.io.Reader;
+import javax.imageio.ImageIO;
+import java.awt.*;
+import java.awt.image.BufferedImage;
+import java.io.File;
+import java.io.IOException;
+import java.util.List;
 import java.util.*;
-import java.util.Map.Entry;
 
 public class LGCustomItems {
-    static final HashMap<Class<? extends Role>, HashMap<String, Material>> mappings = new HashMap<>();
-    static final String JSON_FILE = "custom_items.json";
+    private static final Map<String, Map<String, Short>> mappings = new HashMap<>();
 
-    static {
-        JSONObject parsedJson;
-
-        try {
-            parsedJson = (JSONObject) readCustomItemsJSON();
-        } catch (Exception e) {
-            throw new RuntimeException("Failed to parse JSON file" + LGCustomItems.JSON_FILE, e);
-        }
-
-        for (Object rawEntry : parsedJson.entrySet()) {
-            final HashMap<String, Material> items = new HashMap<>();
-
-            @SuppressWarnings("unchecked") final Entry<String, HashMap<String, Material>> entry = (Entry<String, HashMap<String, Material>>) rawEntry;
-            final JSONObject currentProperties = (JSONObject) entry.getValue();
-            final String roleName = entry.getKey();
-
-            for (Object rawProperty : currentProperties.entrySet()) {
-                @SuppressWarnings("unchecked") final Entry<String, String> property = (Entry<String, String>) rawProperty;
-                final String currentName = property.getKey();
-                final String currentMaterial = property.getValue();
-
-                items.put(currentName, Material.valueOf(currentMaterial));
-            }
-
-            LGCustomItems.addItem(roleName, items);
-        }
+    public static short getItem(Role role) {
+        return getItem(role, new ArrayList<>());
     }
 
-    private static Object readCustomItemsJSON() throws Exception {
-        final InputStream stream = LGCustomItems.class.getClassLoader().getResourceAsStream(LGCustomItems.JSON_FILE);
-        final Reader reader = new InputStreamReader(Objects.requireNonNull(stream));
-        JSONParser jsonParser = new JSONParser();
-
-        return jsonParser.parse(reader);
-    }
-
-    private static void addItem(final String roleName, HashMap<String, Material> currentMapping) {
-        try {
-            @SuppressWarnings("unchecked") final Class<? extends Role> matchingClass = (Class<? extends Role>) Class
-                    .forName("fr.leomelki.loupgarou.roles.R" + roleName);
-
-            LGCustomItems.mappings.put(matchingClass, currentMapping);
-        } catch (ClassNotFoundException e) {
-            e.printStackTrace();
-        }
-    }
-
-    public static Material getItem(Role role) {
-        return mappings.get(role.getClass()).get("");
-    }
-
-    public static Material getItem(LGPlayer player, List<String> constraints) {
+    public static short getItem(LGPlayer player, List<LGCustomItemsConstraints> constraints) {
         Bukkit.getPluginManager().callEvent(new LGCustomItemChangeEvent(player.getGame(), player, constraints));
 
-        Collections.sort(constraints);
-        HashMap<String, Material> mapps = mappings.get(player.getRole().getClass());
-
-        // Lors du développement de rôles.
-        if (mapps == null)
-            return Material.AIR;
-
-        StringJoiner sj = new StringJoiner("_");
-        for (String s : constraints)
-            sj.add(s);
-
-        return mapps.get(sj.toString());
+        return getItem(player.getRole(), constraints);
     }
 
-    public static Material getItem(LGPlayer player) {
+    public static short getItem(LGPlayer player) {
         return getItem(player, new ArrayList<>());
     }
 
     public static void updateItem(LGPlayer lgp) {
-        lgp.getPlayer().getInventory().setItemInOffHand(new ItemStack(getItem(lgp)));
+        lgp.getPlayer().getInventory().setItemInOffHand(new ItemBuilder(Material.MAP).name("").durability(getItem(lgp)).make());
         lgp.getPlayer().updateInventory();
     }
 
-    public static void updateItem(LGPlayer lgp, List<String> constraints) {
-        lgp.getPlayer().getInventory().setItemInOffHand(new ItemStack(getItem(lgp, constraints)));
+    public static void updateItem(LGPlayer lgp, List<LGCustomItemsConstraints> constraints) {
+        lgp.getPlayer().getInventory().setItemInOffHand(new ItemBuilder(Material.MAP).name("").durability(getItem(lgp, constraints)).make());
         lgp.getPlayer().updateInventory();
+    }
+
+    public static void initRole(String name) throws IOException {
+        Map<String, Short> maps = new HashMap<>();
+        List<LGCustomItemsConstraints> constraints = new ArrayList<>();
+        initRole(maps, name, constraints);
+        constraints.clear();
+        constraints.add(LGCustomItemsConstraints.DEAD);
+        initRole(maps, name, constraints);
+
+        constraints.clear();
+        constraints.add(LGCustomItemsConstraints.MAYOR);
+        initRole(maps, name, constraints);
+        constraints.clear();
+        constraints.add(LGCustomItemsConstraints.MAYOR);
+        constraints.add(LGCustomItemsConstraints.DEAD);
+        initRole(maps, name, constraints);
+
+        constraints.clear();
+        constraints.add(LGCustomItemsConstraints.INFECTED);
+        initRole(maps, name, constraints);
+        constraints.clear();
+        constraints.add(LGCustomItemsConstraints.INFECTED);
+        constraints.add(LGCustomItemsConstraints.DEAD);
+        initRole(maps, name, constraints);
+
+        constraints.clear();
+        constraints.add(LGCustomItemsConstraints.VAMPIRE_INFECTE);
+        initRole(maps, name, constraints);
+        constraints.clear();
+        constraints.add(LGCustomItemsConstraints.VAMPIRE_INFECTE);
+        constraints.add(LGCustomItemsConstraints.DEAD);
+        initRole(maps, name, constraints);
+
+        constraints.clear();
+        constraints.add(LGCustomItemsConstraints.INFECTED);
+        constraints.add(LGCustomItemsConstraints.MAYOR);
+        initRole(maps, name, constraints);
+        constraints.clear();
+        constraints.add(LGCustomItemsConstraints.INFECTED);
+        constraints.add(LGCustomItemsConstraints.MAYOR);
+        constraints.add(LGCustomItemsConstraints.DEAD);
+        initRole(maps, name, constraints);
+
+        constraints.clear();
+        constraints.add(LGCustomItemsConstraints.VAMPIRE_INFECTE);
+        constraints.add(LGCustomItemsConstraints.MAYOR);
+        initRole(maps, name, constraints);
+        constraints.clear();
+        constraints.add(LGCustomItemsConstraints.VAMPIRE_INFECTE);
+        constraints.add(LGCustomItemsConstraints.MAYOR);
+        constraints.add(LGCustomItemsConstraints.DEAD);
+        initRole(maps, name, constraints);
+        mappings.put(name, maps);
+    }
+
+    private static void initRole(Map<String, Short> maps, String name, List<LGCustomItemsConstraints> constraints) throws IOException {
+        Collections.sort(constraints);
+
+        StringJoiner sj = new StringJoiner("_");
+        for (LGCustomItemsConstraints s : constraints)
+            sj.add(s.getName());
+
+        String itemName = sj.toString();
+
+        MapView mapView = Bukkit.createMap(Bukkit.getWorlds().get(0));
+        BufferedImage role_image = ImageIO.read(new File(MainLg.getInstance().getDataFolder(), "roles" + File.separator + name + ".png"));
+        BufferedImage mort_image = ImageIO.read(new File(MainLg.getInstance().getDataFolder(), "overlays" + File.separator + "mort.png"));
+        BufferedImage infecte_image = ImageIO.read(new File(MainLg.getInstance().getDataFolder(), "overlays" + File.separator + "infecte.png"));
+        BufferedImage maire_image = ImageIO.read(new File(MainLg.getInstance().getDataFolder(), "overlays" + File.separator + "maire.png"));
+        BufferedImage vampire_infecte_image = ImageIO.read(new File(MainLg.getInstance().getDataFolder(), "overlays" + File.separator + "vampire-infecte.png"));
+        BufferedImage combined_image = new BufferedImage(128, 128, BufferedImage.TYPE_INT_ARGB);
+
+        Graphics g = combined_image.getGraphics();
+        g.drawImage(role_image, 0, 0, null);
+        if (constraints.contains(LGCustomItemsConstraints.DEAD))
+            g.drawImage(mort_image, 0, 0, null);
+        if (constraints.contains(LGCustomItemsConstraints.INFECTED))
+            g.drawImage(infecte_image, 0, 0, null);
+        if (constraints.contains(LGCustomItemsConstraints.MAYOR))
+            g.drawImage(maire_image, 0, 0, null);
+        if (constraints.contains(LGCustomItemsConstraints.VAMPIRE_INFECTE))
+            g.drawImage(vampire_infecte_image, 0, 0, null);
+
+        g.dispose();
+        role_image.flush();
+        mort_image.flush();
+        infecte_image.flush();
+        maire_image.flush();
+        vampire_infecte_image.flush();
+        mapView.getRenderers().forEach(mapView::removeRenderer);
+        mapView.addRenderer(new MapRenderer() {
+            @Override
+            public void render(MapView mapView, MapCanvas mapCanvas, Player player) {
+                mapCanvas.drawImage(0, 0, combined_image);
+            }
+        });
+        combined_image.flush();
+        maps.put(itemName, mapView.getId());
+    }
+
+    public static synchronized short getItem(Role role, List<LGCustomItemsConstraints> constraints) {
+        Collections.sort(constraints);
+
+        if (!mappings.containsKey(role.getRawName())) {
+            Map<String, Short> map = new HashMap<>();
+            mappings.put(role.getRawName(), map);
+        }
+
+        Map<String, Short> mapps = mappings.get(role.getRawName());
+
+        StringJoiner sj = new StringJoiner("_");
+        for (LGCustomItemsConstraints s : constraints)
+            sj.add(s.getName());
+
+        String itemName = sj.toString();
+
+        if (mapps.containsKey(itemName)) {
+            return mapps.get(itemName);
+        } else {
+            MapView mapView = Bukkit.createMap(Bukkit.getWorlds().get(0));
+            Bukkit.getScheduler().runTaskAsynchronously(MainLg.getInstance(), () -> {
+                try {
+                    BufferedImage role_image = ImageIO.read(new File(MainLg.getInstance().getDataFolder(), "roles" + File.separator + role.getRawName() + ".png"));
+                    BufferedImage mort_image = ImageIO.read(new File(MainLg.getInstance().getDataFolder(), "overlays" + File.separator + "mort.png"));
+                    BufferedImage infecte_image = ImageIO.read(new File(MainLg.getInstance().getDataFolder(), "overlays" + File.separator + "infecte.png"));
+                    BufferedImage maire_image = ImageIO.read(new File(MainLg.getInstance().getDataFolder(), "overlays" + File.separator + "maire.png"));
+                    BufferedImage vampire_infecte_image = ImageIO.read(new File(MainLg.getInstance().getDataFolder(), "overlays" + File.separator + "vampire-infecte.png"));
+                    BufferedImage combined_image = new BufferedImage(128, 128, BufferedImage.TYPE_INT_ARGB);
+
+                    Graphics g = combined_image.getGraphics();
+                    g.drawImage(role_image, 0, 0, null);
+                    if (constraints.contains(LGCustomItemsConstraints.DEAD))
+                        g.drawImage(mort_image, 0, 0, null);
+                    if (constraints.contains(LGCustomItemsConstraints.INFECTED))
+                        g.drawImage(infecte_image, 0, 0, null);
+                    if (constraints.contains(LGCustomItemsConstraints.MAYOR))
+                        g.drawImage(maire_image, 0, 0, null);
+                    if (constraints.contains(LGCustomItemsConstraints.VAMPIRE_INFECTE))
+                        g.drawImage(vampire_infecte_image, 0, 0, null);
+
+                    g.dispose();
+                    mapView.getRenderers().forEach(mapView::removeRenderer);
+                    mapView.addRenderer(new MapRenderer() {
+                        @Override
+                        public void render(MapView mapView, MapCanvas mapCanvas, Player player) {
+                            mapCanvas.drawImage(0, 0, combined_image);
+                        }
+                    });
+                } catch (IOException exception) {
+                    exception.printStackTrace();
+                }
+            });
+            mapps.put(itemName, mapView.getId());
+            return mapView.getId();
+        }
     }
 
     @RequiredArgsConstructor
@@ -112,5 +214,4 @@ public class LGCustomItems {
         @Getter
         private final String name;
     }
-
 }

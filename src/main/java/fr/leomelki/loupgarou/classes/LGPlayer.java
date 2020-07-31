@@ -2,14 +2,12 @@ package fr.leomelki.loupgarou.classes;
 
 import com.comphenix.protocol.wrappers.EnumWrappers.NativeGameMode;
 import com.comphenix.protocol.wrappers.EnumWrappers.PlayerInfoAction;
-import com.comphenix.protocol.wrappers.EnumWrappers.TitleAction;
 import com.comphenix.protocol.wrappers.PlayerInfoData;
 import com.comphenix.protocol.wrappers.WrappedChatComponent;
 import com.comphenix.protocol.wrappers.WrappedGameProfile;
 import fr.leomelki.com.comphenix.packetwrapper.WrapperPlayServerChat;
 import fr.leomelki.com.comphenix.packetwrapper.WrapperPlayServerPlayerInfo;
 import fr.leomelki.com.comphenix.packetwrapper.WrapperPlayServerScoreboardTeam;
-import fr.leomelki.com.comphenix.packetwrapper.WrapperPlayServerTitle;
 import fr.leomelki.loupgarou.MainLg;
 import fr.leomelki.loupgarou.classes.chat.LGChat;
 import fr.leomelki.loupgarou.classes.chat.LGChat.LGChatCallback;
@@ -23,6 +21,7 @@ import net.minecraft.server.v1_12_R1.EnumDifficulty;
 import net.minecraft.server.v1_12_R1.EnumGamemode;
 import net.minecraft.server.v1_12_R1.PacketPlayOutRespawn;
 import net.minecraft.server.v1_12_R1.WorldType;
+import net.samagames.tools.Titles;
 import org.bukkit.GameMode;
 import org.bukkit.Location;
 import org.bukkit.craftbukkit.v1_12_R1.entity.CraftPlayer;
@@ -100,22 +99,7 @@ public class LGPlayer {
 
     public void sendTitle(String title, String subTitle, int stay) {
         if (this.player != null) {
-            WrapperPlayServerTitle titlePacket = new WrapperPlayServerTitle();
-            titlePacket.setAction(TitleAction.TIMES);
-            titlePacket.setFadeIn(10);
-            titlePacket.setStay(stay);
-            titlePacket.setFadeOut(10);
-            titlePacket.sendPacket(player);
-
-            titlePacket = new WrapperPlayServerTitle();
-            titlePacket.setAction(TitleAction.TITLE);
-            titlePacket.setTitle(WrappedChatComponent.fromText(title));
-            titlePacket.sendPacket(player);
-
-            titlePacket = new WrapperPlayServerTitle();
-            titlePacket.setAction(TitleAction.SUBTITLE);
-            titlePacket.setTitle(WrappedChatComponent.fromText(subTitle));
-            titlePacket.sendPacket(player);
+            Titles.sendTitle(player, 10, stay, 10, title, subTitle);
         }
     }
 

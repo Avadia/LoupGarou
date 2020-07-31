@@ -11,6 +11,7 @@ import com.comphenix.protocol.wrappers.PlayerInfoData;
 import com.comphenix.protocol.wrappers.WrappedChatComponent;
 import fr.leomelki.com.comphenix.packetwrapper.*;
 import fr.leomelki.fr.farmvivi.avadia.AvadiaListener;
+import fr.leomelki.loupgarou.classes.LGCustomItems;
 import fr.leomelki.loupgarou.classes.LGGame;
 import fr.leomelki.loupgarou.classes.LGPlayer;
 import fr.leomelki.loupgarou.cli.CommandInterpreter;
@@ -73,6 +74,7 @@ public class MainLg extends JavaPlugin {
     public void onEnable() {
         instance = this;
         loadRolesBuilder();
+        initMaps();
         FileConfiguration config = getConfig();
         if (!new File(getDataFolder(), "config.yml").exists()) {
             config.set("showScoreboard", true);
@@ -313,5 +315,17 @@ public class MainLg extends JavaPlugin {
         } catch (NoSuchMethodException | SecurityException e) {
             e.printStackTrace();
         }
+    }
+
+    private void initMaps() {
+        getLogger().info("Génération des maps...");
+        for (String roleName : rolesBuilder.keySet()) {
+            try {
+                LGCustomItems.initRole(roleName);
+            } catch (IOException exception) {
+                exception.printStackTrace();
+            }
+        }
+        getLogger().info("Maps générés !");
     }
 }

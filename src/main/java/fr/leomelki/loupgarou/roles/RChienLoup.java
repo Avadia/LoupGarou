@@ -48,6 +48,11 @@ public class RChienLoup extends Role {
     }
 
     @Override
+    public String getRawName() {
+        return "ChienLoup";
+    }
+
+    @Override
     public String getName(int amount) {
         final String baseline = this.getName();
 

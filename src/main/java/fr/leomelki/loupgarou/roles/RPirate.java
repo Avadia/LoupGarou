@@ -31,7 +31,7 @@ public class RPirate extends Role {
     static ItemStack[] items = new ItemStack[9];
 
     static {
-        items[3] = new ItemStack(Material.IRON_NUGGET);
+        items[3] = new ItemStack(Material.BARRIER);
         ItemMeta meta = items[3].getItemMeta();
         if (meta != null) {
             meta.setDisplayName("§7§lNe rien faire");
@@ -52,6 +52,11 @@ public class RPirate extends Role {
 
     public RPirate(LGGame game) {
         super(game);
+    }
+
+    @Override
+    public String getRawName() {
+        return "Pirate";
     }
 
     @Override

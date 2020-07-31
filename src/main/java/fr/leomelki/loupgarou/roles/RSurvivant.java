@@ -36,6 +36,11 @@ public class RSurvivant extends Role {
     }
 
     @Override
+    public String getRawName() {
+        return "Survivant";
+    }
+
+    @Override
     public RoleType getType() {
         return RoleType.NEUTRAL;
     }
@@ -93,14 +98,14 @@ public class RSurvivant extends Role {
         ItemStack[] items = new ItemStack[9];
         VariableCache cache = LGPlayer.thePlayer(player).getCache();
         if (cache.<Integer>get(RSurvivant.AMOUNT_OF_PROTECTIONS_REMAINING) > 0) {
-            items[3] = new ItemStack(Material.IRON_NUGGET);
+            items[3] = new ItemStack(Material.BARRIER);
             ItemMeta meta = items[3].getItemMeta();
             if (meta != null) {
                 meta.setDisplayName("§7§lNe rien faire");
                 meta.setLore(Collections.singletonList("§8Passez votre tour"));
             }
             items[3].setItemMeta(meta);
-            items[5] = new ItemStack(Material.GOLD_NUGGET);
+            items[5] = new ItemStack(Material.SHIELD);
             meta = items[5].getItemMeta();
             if (meta != null) {
                 meta.setDisplayName(
@@ -109,7 +114,7 @@ public class RSurvivant extends Role {
             }
             items[5].setItemMeta(meta);
         } else {
-            items[4] = new ItemStack(Material.IRON_NUGGET);
+            items[4] = new ItemStack(Material.BARRIER);
             ItemMeta meta = items[4].getItemMeta();
             if (meta != null) {
                 meta.setDisplayName("§7§lNe rien faire");
@@ -156,13 +161,13 @@ public class RSurvivant extends Role {
         if (lgp.getRole() != this || item == null || item.getItemMeta() == null)
             return;
 
-        if (item.getType() == Material.IRON_NUGGET) {
+        if (item.getType() == Material.BARRIER) {
             e.setCancelled(true);
             lgp.sendMessage("§4§oTu es sans défense...");
             closeInventory(player);
             lgp.hideView();
             callback.run();
-        } else if (item.getType() == Material.GOLD_NUGGET) {
+        } else if (item.getType() == Material.SHIELD) {
             e.setCancelled(true);
             closeInventory(player);
             lgp.sendActionBarMessage("§9§lTu as décidé de te protéger.");

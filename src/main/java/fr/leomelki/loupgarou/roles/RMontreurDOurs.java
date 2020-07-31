@@ -18,6 +18,11 @@ public class RMontreurDOurs extends Role {
     }
 
     @Override
+    public String getRawName() {
+        return "MontreurDOurs";
+    }
+
+    @Override
     public RoleType getType() {
         return RoleType.VILLAGER;
     }

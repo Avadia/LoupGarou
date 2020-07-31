@@ -25,6 +25,11 @@ public class RLoupGarou extends Role {
     }
 
     @Override
+    public String getRawName() {
+        return "LoupGarou";
+    }
+
+    @Override
     public String getName(int amount) {
         return (amount > 1) ? "§c§lLoups-Garous" : this.getName();
     }

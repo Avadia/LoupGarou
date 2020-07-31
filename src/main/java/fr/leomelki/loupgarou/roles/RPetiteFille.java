@@ -17,6 +17,11 @@ public class RPetiteFille extends Role {
     }
 
     @Override
+    public String getRawName() {
+        return "PetiteFille";
+    }
+
+    @Override
     public RoleType getType() {
         return RoleType.VILLAGER;
     }

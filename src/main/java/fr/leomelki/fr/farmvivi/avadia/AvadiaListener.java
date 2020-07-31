@@ -152,9 +152,6 @@ public class AvadiaListener implements Listener {
         MainLg.getInstance().setEndGame(true);
         MainLg.getInstance().setStartGame(false);
         Bukkit.getScheduler().runTaskLater(MainLg.getInstance(), () -> {
-            for (Player p : Bukkit.getOnlinePlayers()) {
-                p.kickPlayer("Partie terminé.");
-            }
             FileConfiguration config = MainLg.getInstance().getConfig();
             for (String role : getRoles().keySet())
                 config.set("distributionFixed." + role, 0);
