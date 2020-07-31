@@ -20,7 +20,7 @@ public class RLoupGarouBlanc extends Role {
     private static final ItemStack skip;
 
     static {
-        skip = new ItemStack(Material.IRON_NUGGET);
+        skip = new ItemStack(Material.BARRIER);
         ItemMeta meta = skip.getItemMeta();
         if (meta != null) {
             meta.setDisplayName("§7§lNe rien faire");
@@ -34,6 +34,11 @@ public class RLoupGarouBlanc extends Role {
 
     public RLoupGarouBlanc(LGGame game) {
         super(game);
+    }
+
+    @Override
+    public String getRawName() {
+        return "LoupGarouBlanc";
     }
 
     @Override
@@ -126,7 +131,7 @@ public class RLoupGarouBlanc extends Role {
     public void onClick(PlayerInteractEvent e) {
         Player p = e.getPlayer();
         LGPlayer player = LGPlayer.thePlayer(p);
-        if (e.getItem() != null && e.getItem().getType() == Material.IRON_NUGGET && player.getRole() == this) {
+        if (e.getItem() != null && e.getItem().getType() == Material.BARRIER && player.getRole() == this) {
             player.stopChoosing();
             p.getInventory().setItem(8, null);
             p.updateInventory();
@@ -172,5 +177,4 @@ public class RLoupGarouBlanc extends Role {
             e.getWinners().addAll(getPlayers());
         }
     }
-
 }

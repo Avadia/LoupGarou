@@ -11,6 +11,7 @@ import com.comphenix.protocol.wrappers.PlayerInfoData;
 import com.comphenix.protocol.wrappers.WrappedChatComponent;
 import fr.leomelki.com.comphenix.packetwrapper.*;
 import fr.leomelki.fr.farmvivi.avadia.AvadiaListener;
+import fr.leomelki.loupgarou.classes.LGCustomItems;
 import fr.leomelki.loupgarou.classes.LGGame;
 import fr.leomelki.loupgarou.classes.LGPlayer;
 import fr.leomelki.loupgarou.cli.CommandInterpreter;
@@ -73,6 +74,7 @@ public class MainLg extends JavaPlugin {
     public void onEnable() {
         instance = this;
         loadRolesBuilder();
+        initMaps();
         FileConfiguration config = getConfig();
         if (!new File(getDataFolder(), "config.yml").exists()) {
             config.set("showScoreboard", true);
@@ -206,7 +208,7 @@ public class MainLg extends JavaPlugin {
                     public void onPacketSending(PacketEvent event) {
                         LGPlayer player = LGPlayer.thePlayer(event.getPlayer());
                         WrapperPlayServerScoreboardTeam team = new WrapperPlayServerScoreboardTeam(event.getPacket());
-                        team.setColor(ChatColor.WHITE);
+                        team.setColor(ChatColor.WHITE.ordinal());
                         Player other = Bukkit.getPlayer(team.getName());
                         if (other == null)
                             return;
@@ -215,11 +217,11 @@ public class MainLg extends JavaPlugin {
                             LGUpdatePrefixEvent evt2 = new LGUpdatePrefixEvent(player.getGame(), lgp, player, "");
                             Bukkit.getPluginManager().callEvent(evt2);
                             if (evt2.getPrefix().length() > 0)
-                                team.setPrefix(WrappedChatComponent.fromText(evt2.getPrefix()));
+                                team.setPrefix(evt2.getPrefix());
                             else {
-                                team.setPrefix(WrappedChatComponent.fromText("§f"));
+                                team.setPrefix("§f");
                                 if (lgp.getNick() != null) {
-                                    team.setSuffix(WrappedChatComponent.fromText("§8 => §b" + lgp.getName()));
+                                    team.setSuffix("§8 => §b" + lgp.getName());
                                 }
                             }
                         }
@@ -313,5 +315,17 @@ public class MainLg extends JavaPlugin {
         } catch (NoSuchMethodException | SecurityException e) {
             e.printStackTrace();
         }
+    }
+
+    private void initMaps() {
+        getLogger().info("Génération des maps...");
+        for (String roleName : rolesBuilder.keySet()) {
+            try {
+                LGCustomItems.initRole(roleName);
+            } catch (IOException exception) {
+                exception.printStackTrace();
+            }
+        }
+        getLogger().info("Maps générés !");
     }
 }

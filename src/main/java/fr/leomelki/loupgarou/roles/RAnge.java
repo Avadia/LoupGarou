@@ -19,6 +19,11 @@ public class RAnge extends Role {
     }
 
     @Override
+    public String getRawName() {
+        return "Ange";
+    }
+
+    @Override
     public RoleType getType() {
         return RoleType.NEUTRAL;
     }

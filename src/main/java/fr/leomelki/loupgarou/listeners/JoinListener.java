@@ -1,6 +1,5 @@
 package fr.leomelki.loupgarou.listeners;
 
-import com.comphenix.protocol.wrappers.WrappedChatComponent;
 import fr.leomelki.com.comphenix.packetwrapper.WrapperPlayServerScoreboardTeam;
 import fr.leomelki.loupgarou.MainLg;
 import fr.leomelki.loupgarou.classes.LGPlayer;
@@ -26,7 +25,7 @@ public class JoinListener implements Listener {
     }
 
     @EventHandler
-    public void onJoin(PlayerQuitEvent e) {
+    public void onQuit(PlayerQuitEvent e) {
         Bukkit.getPluginManager().callEvent(new QuitEvent(e.getPlayer(), "is disconnected"));
         e.setQuitMessage("");
     }
@@ -38,7 +37,7 @@ public class JoinListener implements Listener {
 
         WrapperPlayServerScoreboardTeam myTeam = new WrapperPlayServerScoreboardTeam();
         myTeam.setName(p.getName());
-        myTeam.setPrefix(WrappedChatComponent.fromText(""));
+        myTeam.setPrefix("");
         myTeam.setPlayers(Collections.singletonList(p.getName()));
         myTeam.setMode(2);
         boolean noSpec = p.getGameMode() != GameMode.SPECTATOR;
@@ -48,7 +47,7 @@ public class JoinListener implements Listener {
                     player.hidePlayer(p);
                 WrapperPlayServerScoreboardTeam team = new WrapperPlayServerScoreboardTeam();
                 team.setName(player.getName());
-                team.setPrefix(WrappedChatComponent.fromText(""));
+                team.setPrefix("");
                 team.setPlayers(Collections.singletonList(player.getName()));
                 team.setMode(2);
 
@@ -82,5 +81,4 @@ public class JoinListener implements Listener {
         lgp.remove();
         e.setQuitMessage("");
     }
-
 }

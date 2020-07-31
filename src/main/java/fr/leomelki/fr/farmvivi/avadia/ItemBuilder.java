@@ -318,7 +318,7 @@ public class ItemBuilder {
      * @since 1.0
      */
     public ItemBuilder skullOwner(final String name) {
-        if (make().getType() == Material.LEGACY_SKULL_ITEM && make().getDurability() == (byte) 3) {
+        if (make().getType() == Material.SKULL_ITEM && make().getDurability() == (byte) 3) {
             SkullMeta skullMeta = (SkullMeta) meta();
             skullMeta.setOwner(name);
             make().setItemMeta(meta());

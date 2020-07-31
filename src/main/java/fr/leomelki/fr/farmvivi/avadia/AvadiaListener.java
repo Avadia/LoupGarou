@@ -42,8 +42,8 @@ public class AvadiaListener implements Listener {
             Player p = e.getPlayer();
 
             Inventory gui = Bukkit.createInventory(null, InventoryType.HOPPER, "Paramètres de la partie");
-            gui.setItem(1, new ItemBuilder(Material.TOTEM_OF_UNDYING).name("§6Choisir les rôles (manuel)").make());
-            ItemBuilder scoreboard = new ItemBuilder(Material.CLOCK);
+            gui.setItem(1, new ItemBuilder(Material.SKULL_ITEM).durability(3).name("§6Choisir les rôles (manuel)").make());
+            ItemBuilder scoreboard = new ItemBuilder(Material.WATCH);
             if (MainLg.getInstance().getConfig().getBoolean("showScoreboard")) {
                 scoreboard.name("§eCacher les rôles");
             } else {
@@ -67,73 +67,77 @@ public class AvadiaListener implements Listener {
         if (e.getCurrentItem() == null)
             return;
         ItemStack item = e.getCurrentItem();
-        if (e.getView().getTitle().equals("Lancement de la partie")) {
-            e.setCancelled(true);
+        switch (e.getView().getTitle()) {
+            case "Lancement de la partie":
+                e.setCancelled(true);
 
-            if (item.getType() == Material.SHEARS) {
-                MainLg.getInstance().getConfig().set("roleDistribution", "fixed");
-                MainLg.getInstance().saveConfig();
-                MainLg.getInstance().loadConfig();
-            } else if (item.getType() == Material.REDSTONE) {
-                MainLg.getInstance().getConfig().set("roleDistribution", "random");
-                Bukkit.dispatchCommand(p, "lg random players " + Bukkit.getOnlinePlayers().size());
-            }
-
-            Bukkit.dispatchCommand(p, "lg joinAll");
-            Bukkit.dispatchCommand(p, "lg start " + p.getName());
-
-        } else if (e.getView().getTitle().equals("Paramètres de la partie")) {
-            e.setCancelled(true);
-
-            if (item.getType() == Material.TOTEM_OF_UNDYING) {
-                AtomicInteger index = new AtomicInteger();
-                Inventory gui = Bukkit.createInventory(null, 4 * 9, "Rôles (manuel)");
-                getRoles().forEach((s, constructor) -> gui.setItem(index.getAndIncrement(), getItem(s)));
-                gui.setItem(35, new ItemBuilder(Material.GOLD_NUGGET).name("§aValider").make());
-                p.openInventory(gui);
-            } else if (item.getType() == Material.CLOCK) {
-                if (MainLg.getInstance().getConfig().getBoolean("showScoreboard")) {
-                    MainLg.getInstance().getConfig().set("showScoreboard", false);
-                    p.sendMessage("§eLes rôles ne seront plus visibles.");
-                } else {
-                    MainLg.getInstance().getConfig().set("showScoreboard", true);
-                    p.sendMessage("§eLes rôles seront visibles.");
+                if (item.getType() == Material.SHEARS) {
+                    MainLg.getInstance().getConfig().set("roleDistribution", "fixed");
+                    MainLg.getInstance().saveConfig();
+                    MainLg.getInstance().loadConfig();
+                } else if (item.getType() == Material.REDSTONE) {
+                    MainLg.getInstance().getConfig().set("roleDistribution", "random");
+                    Bukkit.dispatchCommand(p, "lg random players " + Bukkit.getOnlinePlayers().size());
                 }
-                MainLg.getInstance().saveConfig();
-                MainLg.getInstance().loadConfig();
-                p.closeInventory();
-            }
-        } else if (e.getView().getTitle().equals("Rôles (manuel)")) {
-            AtomicInteger index = new AtomicInteger();
-            AtomicInteger n = new AtomicInteger();
 
-            e.setCancelled(true);
+                Bukkit.dispatchCommand(p, "lg joinAll");
+                Bukkit.dispatchCommand(p, "lg start " + p.getName());
 
-            if (item.getType() == Material.GOLD_NUGGET) {
-                p.closeInventory();
-                Bukkit.dispatchCommand(p, "lg roles");
-            } else if (e.isLeftClick()) {
-                MainLg.getInstance().getRolesBuilder().forEach((s, constructor) -> {
-                    if (s.equals(Objects.requireNonNull(item.getItemMeta()).getDisplayName().replaceFirst("§6", ""))) {
-                        n.set(MainLg.getInstance().getConfig().getInt("distributionFixed." + s));
-                        Bukkit.dispatchCommand(p, "lg roles set " + index + " " + (n.get() + 1));
-                        e.setCurrentItem(getItem(s));
-                        return;
+                break;
+            case "Paramètres de la partie":
+                e.setCancelled(true);
+
+                if (item.getType() == Material.SKULL_ITEM) {
+                    AtomicInteger index = new AtomicInteger();
+                    Inventory gui = Bukkit.createInventory(null, 4 * 9, "Rôles (manuel)");
+                    getRoles().forEach((s, constructor) -> gui.setItem(index.getAndIncrement(), getItem(s)));
+                    gui.setItem(35, new ItemBuilder(Material.GOLD_NUGGET).name("§aValider").make());
+                    p.openInventory(gui);
+                } else if (item.getType() == Material.WATCH) {
+                    if (MainLg.getInstance().getConfig().getBoolean("showScoreboard")) {
+                        MainLg.getInstance().getConfig().set("showScoreboard", false);
+                        p.sendMessage("§eLes rôles ne seront plus visibles.");
+                    } else {
+                        MainLg.getInstance().getConfig().set("showScoreboard", true);
+                        p.sendMessage("§eLes rôles seront visibles.");
                     }
-                    index.getAndIncrement();
-                });
-            } else if (e.isRightClick()) {
-                MainLg.getInstance().getRolesBuilder().forEach((s, constructor) -> {
-                    if (s.equals(Objects.requireNonNull(item.getItemMeta()).getDisplayName().replaceFirst("§6", ""))) {
-                        n.set(MainLg.getInstance().getConfig().getInt("distributionFixed." + s));
-                        if (n.get() > 0)
-                            Bukkit.dispatchCommand(p, "lg roles set " + index + " " + (n.get() - 1));
-                        e.setCurrentItem(getItem(s));
-                        return;
-                    }
-                    index.getAndIncrement();
-                });
-            }
+                    MainLg.getInstance().saveConfig();
+                    MainLg.getInstance().loadConfig();
+                    p.closeInventory();
+                }
+                break;
+            case "Rôles (manuel)":
+                AtomicInteger index = new AtomicInteger();
+                AtomicInteger n = new AtomicInteger();
+
+                e.setCancelled(true);
+
+                if (item.getType() == Material.GOLD_NUGGET) {
+                    p.closeInventory();
+                    Bukkit.dispatchCommand(p, "lg roles");
+                } else if (e.isLeftClick()) {
+                    MainLg.getInstance().getRolesBuilder().forEach((s, constructor) -> {
+                        if (s.equals(Objects.requireNonNull(item.getItemMeta()).getDisplayName().replaceFirst("§6", ""))) {
+                            n.set(MainLg.getInstance().getConfig().getInt("distributionFixed." + s));
+                            Bukkit.dispatchCommand(p, "lg roles set " + index + " " + (n.get() + 1));
+                            e.setCurrentItem(getItem(s));
+                            return;
+                        }
+                        index.getAndIncrement();
+                    });
+                } else if (e.isRightClick()) {
+                    MainLg.getInstance().getRolesBuilder().forEach((s, constructor) -> {
+                        if (s.equals(Objects.requireNonNull(item.getItemMeta()).getDisplayName().replaceFirst("§6", ""))) {
+                            n.set(MainLg.getInstance().getConfig().getInt("distributionFixed." + s));
+                            if (n.get() > 0)
+                                Bukkit.dispatchCommand(p, "lg roles set " + index + " " + (n.get() - 1));
+                            e.setCurrentItem(getItem(s));
+                            return;
+                        }
+                        index.getAndIncrement();
+                    });
+                }
+                break;
         }
     }
 
@@ -148,9 +152,6 @@ public class AvadiaListener implements Listener {
         MainLg.getInstance().setEndGame(true);
         MainLg.getInstance().setStartGame(false);
         Bukkit.getScheduler().runTaskLater(MainLg.getInstance(), () -> {
-            for (Player p : Bukkit.getOnlinePlayers()) {
-                p.kickPlayer("Partie terminé.");
-            }
             FileConfiguration config = MainLg.getInstance().getConfig();
             for (String role : getRoles().keySet())
                 config.set("distributionFixed." + role, 0);
@@ -190,7 +191,7 @@ public class AvadiaListener implements Listener {
         int amount = MainLg.getInstance().getConfig().getInt("distributionFixed." + role);
         ItemBuilder item;
         if (amount > 0) {
-            item = new ItemBuilder(Material.TOTEM_OF_UNDYING).amount(amount);
+            item = new ItemBuilder(Material.SKULL_ITEM).durability(3).skullOwner(role).amount(amount);
         } else {
             item = new ItemBuilder(Material.BARRIER);
         }

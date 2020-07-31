@@ -20,6 +20,11 @@ public class RChasseur extends Role {
     }
 
     @Override
+    public String getRawName() {
+        return "Chasseur";
+    }
+
+    @Override
     public RoleType getType() {
         return RoleType.VILLAGER;
     }

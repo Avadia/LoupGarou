@@ -22,6 +22,11 @@ public class RBouffon extends Role {
     }
 
     @Override
+    public String getRawName() {
+        return "Bouffon";
+    }
+
+    @Override
     public RoleType getType() {
         return RoleType.NEUTRAL;
     }

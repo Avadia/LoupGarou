@@ -16,6 +16,11 @@ public class RAssassin extends Role {
     }
 
     @Override
+    public String getRawName() {
+        return "Assassin";
+    }
+
+    @Override
     public RoleType getType() {
         return RoleType.NEUTRAL;
     }

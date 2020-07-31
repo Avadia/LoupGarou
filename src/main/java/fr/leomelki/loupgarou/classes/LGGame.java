@@ -6,8 +6,8 @@ import com.comphenix.protocol.wrappers.PlayerInfoData;
 import com.comphenix.protocol.wrappers.WrappedChatComponent;
 import com.comphenix.protocol.wrappers.WrappedGameProfile;
 import fr.leomelki.com.comphenix.packetwrapper.*;
+import fr.leomelki.fr.farmvivi.avadia.ItemBuilder;
 import fr.leomelki.loupgarou.MainLg;
-import fr.leomelki.loupgarou.classes.LGCustomItems.LGCustomItemsConstraints;
 import fr.leomelki.loupgarou.classes.chat.LGChat;
 import fr.leomelki.loupgarou.events.*;
 import fr.leomelki.loupgarou.events.LGPlayerKilledEvent.Reason;
@@ -17,10 +17,7 @@ import fr.leomelki.loupgarou.utils.MultipleValueMap;
 import fr.leomelki.loupgarou.utils.VariousUtils;
 import lombok.Getter;
 import lombok.Setter;
-import org.bukkit.Bukkit;
-import org.bukkit.GameMode;
-import org.bukkit.Location;
-import org.bukkit.Material;
+import org.bukkit.*;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -240,12 +237,6 @@ public class LGGame implements Listener {
             sendActionBarMessage("§7Le joueur §8" + lgp.getFullName() + "§7 a rejoint la partie §9(§8" + inGame.size() + "§7/§8"
                     + maxPlayers + "§9)");
 
-            // Reset scoreboard
-            WrapperPlayServerScoreboardObjective obj = new WrapperPlayServerScoreboardObjective();
-            obj.setName("lg_scoreboard");
-            obj.setMode(1);
-            obj.sendPacket(player);
-
             Bukkit.getPluginManager().callEvent(new LGGameJoinEvent(this, lgp));
             // AutoStart
             if (autoStart)
@@ -366,7 +357,7 @@ public class LGGame implements Listener {
                 if (--actualRole < 0)
                     actualRole = getRoles().size() - 1;
 
-                ItemStack stack = new ItemStack(LGCustomItems.getItem(getRoles().get(actualRole)));
+                ItemStack stack = new ItemBuilder(Material.MAP).name("").durability(LGCustomItems.getItem(getRoles().get(actualRole))).make();
                 for (LGPlayer lgp : getInGame()) {
                     lgp.getPlayer().getInventory().setItemInOffHand(stack);
                     lgp.getPlayer().updateInventory();
@@ -377,6 +368,26 @@ public class LGGame implements Listener {
 
     private void _start() {
         broadcastMessage("§8§oDébut de la partie...");
+
+        Bukkit.getServer().getScheduler().runTaskTimerAsynchronously(MainLg.getInstance(), new Runnable() {
+            private int time = 0;
+
+            @Override
+            public void run() {
+                this.time++;
+                improvedScoreboard.getVObjective().setDisplayName(ChatColor.RED + "" + ChatColor.BOLD + "LoupGarou" + ChatColor.WHITE + " | " + ChatColor.YELLOW + this.formatTime(this.time));
+                improvedScoreboard.getVObjective().updateScore(true);
+            }
+
+            public String formatTime(int time) {
+                int mins = time / 60;
+                int secs = time - mins * 60;
+
+                String secsSTR = (secs < 10) ? "0" + secs : secs + "";
+
+                return mins + ":" + secsSTR;
+            }
+        }, 220L, 20L);
 
         for (Role role : this.roles) {
             role.updateItemsForAllMembers();
@@ -578,7 +589,7 @@ public class LGGame implements Listener {
 
             VariousUtils.setWarning(killed.getPlayer(), true);
 
-            killed.getPlayer().getInventory().setHelmet(new ItemStack(Material.CARVED_PUMPKIN));
+            killed.getPlayer().getInventory().setHelmet(new ItemStack(Material.PUMPKIN));
 
             LGCustomItems.updateItem(killed);
 
@@ -828,9 +839,9 @@ public class LGGame implements Listener {
     public void onCustomItemChange(LGCustomItemChangeEvent e) {
         if (e.getGame() == this) {
             if (getMayor() == e.getPlayer())
-                e.getConstraints().add(LGCustomItemsConstraints.MAYOR.getName());
+                e.getConstraints().add(LGCustomItems.LGCustomItemsConstraints.MAYOR);
             if (e.getPlayer().isDead())
-                e.getConstraints().add(LGCustomItemsConstraints.DEAD.getName());
+                e.getConstraints().add(LGCustomItems.LGCustomItemsConstraints.DEAD);
         }
     }
 

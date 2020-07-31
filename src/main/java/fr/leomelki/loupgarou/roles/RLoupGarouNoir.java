@@ -1,8 +1,8 @@
 package fr.leomelki.loupgarou.roles;
 
+import fr.leomelki.fr.farmvivi.avadia.ItemBuilder;
 import fr.leomelki.loupgarou.MainLg;
 import fr.leomelki.loupgarou.classes.LGCustomItems;
-import fr.leomelki.loupgarou.classes.LGCustomItems.LGCustomItemsConstraints;
 import fr.leomelki.loupgarou.classes.LGGame;
 import fr.leomelki.loupgarou.classes.LGPlayer;
 import fr.leomelki.loupgarou.events.LGCustomItemChangeEvent;
@@ -10,7 +10,7 @@ import fr.leomelki.loupgarou.events.LGNightEndEvent;
 import fr.leomelki.loupgarou.events.LGPlayerKilledEvent.Reason;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
-import org.bukkit.craftbukkit.v1_15_R1.inventory.CraftInventoryCustom;
+import org.bukkit.craftbukkit.v1_12_R1.inventory.CraftInventoryCustom;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
@@ -33,7 +33,7 @@ public class RLoupGarouNoir extends Role {
     static ItemStack[] skip = new ItemStack[9];
 
     static {
-        items[3] = new ItemStack(Material.IRON_NUGGET);
+        items[3] = new ItemStack(Material.BARRIER);
         ItemMeta meta = items[3].getItemMeta();
         if (meta != null) {
             meta.setDisplayName("§7§lNe rien faire");
@@ -56,6 +56,11 @@ public class RLoupGarouNoir extends Role {
 
     public RLoupGarouNoir(LGGame game) {
         super(game);
+    }
+
+    @Override
+    public String getRawName() {
+        return "LoupGarouNoir";
     }
 
     @Override
@@ -193,7 +198,7 @@ public class RLoupGarouNoir extends Role {
                     for (Role role : getGame().getRoles())
                         if (role instanceof RLoupGarou && !player.isDead()) {// Si il n'a pas été tué je ne sais comment
                             role.join(player, false);
-                            player.getPlayer().getInventory().setItemInOffHand(new ItemStack(LGCustomItems.getItem(player)));
+                            player.getPlayer().getInventory().setItemInOffHand(new ItemBuilder(Material.MAP).name("").durability(LGCustomItems.getItem(player)).make());
                         }
 
                     for (LGPlayer lgp : getGame().getInGame()) {
@@ -236,7 +241,6 @@ public class RLoupGarouNoir extends Role {
     @EventHandler
     public void onCustomItemChange(LGCustomItemChangeEvent e) {
         if (e.getGame() == getGame() && e.getPlayer().getCache().getBoolean(RLoupGarouNoir.INFECTED_BY_BLACK_WOLF))
-            e.getConstraints().add(LGCustomItemsConstraints.INFECTED.getName());
+            e.getConstraints().add(LGCustomItems.LGCustomItemsConstraints.INFECTED);
     }
-
 }

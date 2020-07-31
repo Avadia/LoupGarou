@@ -18,6 +18,11 @@ public class REnfantSauvage extends Role {
     }
 
     @Override
+    public String getRawName() {
+        return "EnfantSauvage";
+    }
+
+    @Override
     public String getName(int amount) {
         final String baseline = this.getName();
 

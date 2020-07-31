@@ -1,7 +1,6 @@
 package fr.leomelki.loupgarou.roles;
 
 import fr.leomelki.loupgarou.classes.*;
-import fr.leomelki.loupgarou.classes.LGCustomItems.LGCustomItemsConstraints;
 import fr.leomelki.loupgarou.classes.chat.LGChat;
 import fr.leomelki.loupgarou.events.*;
 import fr.leomelki.loupgarou.events.LGPlayerKilledEvent.Reason;
@@ -24,6 +23,11 @@ public class RVampire extends Role {
 
     public RVampire(LGGame game) {
         super(game);
+    }
+
+    @Override
+    public String getRawName() {
+        return "Vampire";
     }
 
     @Override
@@ -219,6 +223,6 @@ public class RVampire extends Role {
     @EventHandler
     public void onCustomItemChange(LGCustomItemChangeEvent e) {
         if (e.getGame() == getGame() && e.getPlayer().getCache().getBoolean(RVampire.INFECTED_BY_VAMPIRE))
-            e.getConstraints().add(LGCustomItemsConstraints.VAMPIRE_INFECTE.getName());
+            e.getConstraints().add(LGCustomItems.LGCustomItemsConstraints.VAMPIRE_INFECTE);
     }
 }

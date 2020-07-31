@@ -13,7 +13,7 @@ import fr.leomelki.loupgarou.events.LGPreDayStartEvent;
 import fr.leomelki.loupgarou.utils.VariousUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
-import org.bukkit.craftbukkit.v1_15_R1.inventory.CraftInventoryCustom;
+import org.bukkit.craftbukkit.v1_12_R1.inventory.CraftInventoryCustom;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
@@ -35,7 +35,7 @@ public class RPretre extends Role {
     static ItemStack[] items = new ItemStack[9];
 
     static {
-        items[3] = new ItemStack(Material.IRON_NUGGET);
+        items[3] = new ItemStack(Material.BARRIER);
         ItemMeta meta = items[3].getItemMeta();
         if (meta != null) {
             meta.setDisplayName("§7§lNe rien faire");
@@ -58,6 +58,11 @@ public class RPretre extends Role {
 
     public RPretre(LGGame game) {
         super(game);
+    }
+
+    @Override
+    public String getRawName() {
+        return "Pretre";
     }
 
     @Override

@@ -1,31 +1,29 @@
 package fr.leomelki.loupgarou.scoreboard;
 
-import com.comphenix.protocol.wrappers.WrappedChatComponent;
-import fr.leomelki.com.comphenix.packetwrapper.WrapperPlayServerScoreboardDisplayObjective;
-import fr.leomelki.com.comphenix.packetwrapper.WrapperPlayServerScoreboardObjective;
 import fr.leomelki.loupgarou.classes.LGPlayer;
 import fr.leomelki.loupgarou.classes.RolePlayers;
 import fr.leomelki.loupgarou.roles.Role;
-import fr.leomelki.loupgarou.utils.RandomString;
 import lombok.Getter;
+import net.samagames.tools.scoreboards.VObjective;
+import org.bukkit.ChatColor;
 
 import java.util.ArrayList;
 import java.util.List;
 
 public class CustomScoreboard {
-    private static final String DISPLAY_NAME = "§e§lAvadia §7⚡ §c§lLoup-Garou";
-    @Getter
-    private final String name = RandomString.generate(15);
     @Getter
     private final List<LGPlayer> inGamePlayers;
     private final List<CustomScoreboardEntry> entries = new ArrayList<>();
     private final boolean shouldShowScoreboard;
     @Getter
     private boolean shown;
+    @Getter
+    private final VObjective vObjective;
 
     public CustomScoreboard(List<LGPlayer> inGamePlayers, boolean shouldShowScoreboard) {
         this.inGamePlayers = inGamePlayers;
         this.shouldShowScoreboard = shouldShowScoreboard;
+        this.vObjective = new VObjective("loupgaroubar", ChatColor.RED + "" + ChatColor.BOLD + "LoupGarou" + ChatColor.WHITE + " | " + ChatColor.YELLOW + "00:00");
     }
 
     private void createEntry(String name, int amountOfPlayers) {
@@ -64,30 +62,16 @@ public class CustomScoreboard {
     }
 
     public void show() {
-        WrapperPlayServerScoreboardObjective objective = new WrapperPlayServerScoreboardObjective();
-        objective.setMode(0);
-        objective.setName(name);
-        objective.setDisplayName(WrappedChatComponent.fromText(DISPLAY_NAME));
-
-        WrapperPlayServerScoreboardDisplayObjective display = new WrapperPlayServerScoreboardDisplayObjective();
-        display.setPosition(1);
-        display.setScoreName(name);
-
         for (LGPlayer currentPlayer : inGamePlayers) {
-            objective.sendPacket(currentPlayer.getPlayer());
-            display.sendPacket(currentPlayer.getPlayer());
+            vObjective.addReceiver(currentPlayer.getPlayer());
         }
 
         shown = true;
     }
 
     public void hide() {
-        WrapperPlayServerScoreboardObjective remove = new WrapperPlayServerScoreboardObjective();
-        remove.setMode(1);
-        remove.setName(name);
-
         for (LGPlayer currentPlayer : inGamePlayers) {
-            remove.sendPacket(currentPlayer.getPlayer());
+            vObjective.removeReceiver(currentPlayer.getPlayer());
         }
 
         this.removePreexistingEntries();

@@ -5,7 +5,7 @@ import fr.leomelki.loupgarou.classes.LGGame;
 import fr.leomelki.loupgarou.classes.LGPlayer;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
-import org.bukkit.craftbukkit.v1_15_R1.inventory.CraftInventoryCustom;
+import org.bukkit.craftbukkit.v1_12_R1.inventory.CraftInventoryCustom;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.inventory.InventoryClickEvent;
@@ -45,6 +45,11 @@ public class RChienLoup extends Role {
 
     public RChienLoup(LGGame game) {
         super(game);
+    }
+
+    @Override
+    public String getRawName() {
+        return "ChienLoup";
     }
 
     @Override

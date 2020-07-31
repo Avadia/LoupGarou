@@ -11,12 +11,12 @@ import fr.leomelki.loupgarou.classes.LGPlayer.LGChooseCallback;
 import fr.leomelki.loupgarou.events.LGVoteLeaderChange;
 import fr.leomelki.loupgarou.utils.VariousUtils;
 import lombok.Getter;
-import net.minecraft.server.v1_15_R1.*;
+import net.minecraft.server.v1_12_R1.*;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
-import org.bukkit.craftbukkit.v1_15_R1.CraftWorld;
-import org.bukkit.craftbukkit.v1_15_R1.entity.CraftPlayer;
+import org.bukkit.craftbukkit.v1_12_R1.CraftWorld;
+import org.bukkit.craftbukkit.v1_12_R1.entity.CraftPlayer;
 import org.bukkit.entity.EntityType;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.scheduler.BukkitRunnable;
@@ -28,21 +28,21 @@ import java.util.Map.Entry;
 public class LGVote {
     private static final EntityArmorStand eas = new EntityArmorStand(((CraftWorld) Bukkit.getWorlds().get(0)).getHandle(),
             0, 0, 0);
-    private static DataWatcherObject<Optional<IChatBaseComponent>> az;
-    private static DataWatcherObject<Boolean> aA;
-    private static DataWatcherObject<Byte> T;
+    private static DataWatcherObject<String> aB;
+    private static DataWatcherObject<Boolean> aC;
+    private static DataWatcherObject<Byte> Z;
 
     static {
         try {
-            Field f = Entity.class.getDeclaredField("az");
+            Field f = Entity.class.getDeclaredField("aB");
             f.setAccessible(true);
-            az = (DataWatcherObject<Optional<IChatBaseComponent>>) f.get(null);
-            f = Entity.class.getDeclaredField("aA");
+            aB = (DataWatcherObject<String>) f.get(null);
+            f = Entity.class.getDeclaredField("aC");
             f.setAccessible(true);
-            aA = (DataWatcherObject<Boolean>) f.get(null);
-            f = Entity.class.getDeclaredField("T");
+            aC = (DataWatcherObject<Boolean>) f.get(null);
+            f = Entity.class.getDeclaredField("Z");
             f.setAccessible(true);
-            T = (DataWatcherObject<Byte>) f.get(null);
+            Z = (DataWatcherObject<Byte>) f.get(null);
         } catch (Exception err) {
             err.printStackTrace();
         }
@@ -332,10 +332,9 @@ public class LGVote {
             final String voteContent = "§6§l" + votesNbr + "§e vote" + (votesNbr > 1 ? "s" : "") + " (§6§l" + votePercentageFormated + "§e)";
 
             DataWatcher datawatcher = new DataWatcher(eas);
-            datawatcher.register(T, (byte) 0x20);
-            datawatcher.register(az,
-                    Optional.ofNullable(IChatBaseComponent.ChatSerializer.a("{\"text\":\"" + voteContent + "\"}")));
-            datawatcher.register(aA, true);
+            datawatcher.register(Z, (byte) 0x20);
+            datawatcher.register(aB, voteContent);
+            datawatcher.register(aC, true);
             PacketPlayOutEntityMetadata meta = new PacketPlayOutEntityMetadata(entityId, datawatcher, true);
 
             for (LGPlayer lgp : viewers) {

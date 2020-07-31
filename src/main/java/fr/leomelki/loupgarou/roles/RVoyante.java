@@ -9,6 +9,11 @@ public class RVoyante extends Role {
     }
 
     @Override
+    public String getRawName() {
+        return "Voyante";
+    }
+
+    @Override
     public RoleType getType() {
         return RoleType.VILLAGER;
     }

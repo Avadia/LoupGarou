@@ -1,3 +1,21 @@
+/*
+  PacketWrapper - ProtocolLib wrappers for Minecraft packets
+  Copyright (C) dmulloy2 <http://dmulloy2.net>
+  Copyright (C) Kristian S. Strangeland
+
+  This program is free software: you can redistribute it and/or modify
+  it under the terms of the GNU General Public License as published by
+  the Free Software Foundation, either version 3 of the License, or
+  (at your option) any later version.
+
+  This program is distributed in the hope that it will be useful,
+  but WITHOUT ANY WARRANTY; without even the implied warranty of
+  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+  GNU General Public License for more details.
+
+  You should have received a copy of the GNU General Public License
+  along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
 package fr.leomelki.com.comphenix.packetwrapper;
 
 import com.comphenix.protocol.PacketType;
@@ -6,7 +24,6 @@ import com.comphenix.protocol.events.PacketContainer;
 import com.comphenix.protocol.events.PacketEvent;
 import com.comphenix.protocol.injector.PacketConstructor;
 import com.comphenix.protocol.wrappers.WrappedDataWatcher;
-import fr.leomelki.com.comphenix.packetwrapper.util.Removed;
 import org.bukkit.World;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.EntityType;
@@ -276,23 +293,21 @@ public class WrapperPlayServerSpawnEntityLiving extends AbstractPacket {
     }
 
     /**
-     * Retrieve the data watcher. This was removed in 1.15
+     * Retrieve the data watcher.
      * <p>
      * Content varies by mob, see Entities.
      *
      * @return The current Metadata
      */
-    @Removed
     public WrappedDataWatcher getMetadata() {
         return handle.getDataWatcherModifier().read(0);
     }
 
     /**
-     * Set the data watcher. This was removed in 1.15.
+     * Set the data watcher.
      *
      * @param value - new value.
      */
-    @Removed
     public void setMetadata(WrappedDataWatcher value) {
         handle.getDataWatcherModifier().write(0, value);
     }

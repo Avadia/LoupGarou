@@ -22,6 +22,11 @@ public class RFaucheur extends Role {
     }
 
     @Override
+    public String getRawName() {
+        return "Faucheur";
+    }
+
+    @Override
     public RoleType getType() {
         return RoleType.VILLAGER;
     }
