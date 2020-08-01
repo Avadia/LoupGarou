@@ -560,6 +560,7 @@ public class LGGame implements Listener {
             player.playAudio(LGSound.START_NIGHT, 0.5);
         }
         nightSongs.setPlaying(true);
+        nightSongs.playNextSong();
         day = false;
         Bukkit.getPluginManager().callEvent(new LGDayEndEvent(this));
         for (LGPlayer player : getInGame())
@@ -769,6 +770,7 @@ public class LGGame implements Listener {
             p.playAudio(LGSound.START_DAY, 0.5);
         }
         daySongs.setPlaying(true);
+        daySongs.playNextSong();
 
         LGNightEndEvent eventNightEnd = new LGNightEndEvent(this);
         Bukkit.getPluginManager().callEvent(eventNightEnd);
