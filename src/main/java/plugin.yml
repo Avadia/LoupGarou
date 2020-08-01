@@ -2,6 +2,6 @@ name: LoupGarou
 version: 1.10.0
 description: Permet de jouer au jeu du loup garou
 main: fr.leomelki.loupgarou.MainLg
-depend: [ProtocolLib]
+depend: [ProtocolLib, NoteBlockAPI]
 commands:
   lg:

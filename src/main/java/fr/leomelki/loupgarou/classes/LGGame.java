@@ -5,6 +5,11 @@ import com.comphenix.protocol.wrappers.EnumWrappers.PlayerInfoAction;
 import com.comphenix.protocol.wrappers.PlayerInfoData;
 import com.comphenix.protocol.wrappers.WrappedChatComponent;
 import com.comphenix.protocol.wrappers.WrappedGameProfile;
+import com.xxmicloxx.NoteBlockAPI.model.Playlist;
+import com.xxmicloxx.NoteBlockAPI.model.RepeatMode;
+import com.xxmicloxx.NoteBlockAPI.model.playmode.StereoMode;
+import com.xxmicloxx.NoteBlockAPI.songplayer.RadioSongPlayer;
+import com.xxmicloxx.NoteBlockAPI.utils.NBSDecoder;
 import fr.leomelki.com.comphenix.packetwrapper.*;
 import fr.leomelki.fr.farmvivi.avadia.ItemBuilder;
 import fr.leomelki.loupgarou.MainLg;
@@ -30,6 +35,7 @@ import org.bukkit.potion.PotionEffectType;
 import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.scheduler.BukkitTask;
 
+import java.io.File;
 import java.security.SecureRandom;
 import java.util.*;
 import java.util.Map.Entry;
@@ -75,6 +81,10 @@ public class LGGame implements Listener {
     private BukkitTask waitTask;
     @Getter
     private LGVote vote;
+    @Getter
+    private RadioSongPlayer daySongs;
+    @Getter
+    private RadioSongPlayer nightSongs;
 
     public LGGame(int maxPlayers) {
         this.maxPlayers = maxPlayers;
@@ -268,6 +278,42 @@ public class LGGame implements Listener {
 
                 mainLgInstance.setStartGame(true);
 
+                Playlist dayPlaylist = null;
+                File[] dayFolder = new File(MainLg.getInstance().getDataFolder(), "songs" + File.separator + "day").listFiles();
+                if (dayFolder != null) {
+                    for (File song : dayFolder) {
+                        if (dayPlaylist == null) {
+                            dayPlaylist = new Playlist(NBSDecoder.parse(song));
+                        } else {
+                            dayPlaylist.add(NBSDecoder.parse(song));
+                        }
+                    }
+                }
+                daySongs = new RadioSongPlayer(dayPlaylist);
+                daySongs.setRandom(true);
+                daySongs.setRepeatMode(RepeatMode.ALL);
+                daySongs.setChannelMode(new StereoMode());
+                daySongs.setVolume((byte) 7);
+                daySongs.setPlaying(false);
+
+                Playlist nightPlaylist = null;
+                File[] nightFolder = new File(MainLg.getInstance().getDataFolder(), "songs" + File.separator + "night").listFiles();
+                if (nightFolder != null) {
+                    for (File song : nightFolder) {
+                        if (nightPlaylist == null) {
+                            nightPlaylist = new Playlist(NBSDecoder.parse(song));
+                        } else {
+                            nightPlaylist.add(NBSDecoder.parse(song));
+                        }
+                    }
+                }
+                nightSongs = new RadioSongPlayer(nightPlaylist);
+                nightSongs.setRandom(true);
+                nightSongs.setRepeatMode(RepeatMode.ALL);
+                nightSongs.setChannelMode(new StereoMode());
+                nightSongs.setVolume((byte) 7);
+                nightSongs.setPlaying(false);
+
                 for (LGPlayer lgp : getInGame()) {
                     final String meme = mainLgInstance.getRandomStartingMeme();
                     if (meme != null) {
@@ -276,6 +322,8 @@ public class LGGame implements Listener {
                         lgp.getPlayer().setFoodLevel(6);
                         lgp.getPlayer().setWalkSpeed(0.2f);
                     }
+                    daySongs.addPlayer(lgp.getPlayer());
+                    nightSongs.addPlayer(lgp.getPlayer());
                     lgp.sendMessage("§c§lATTENTION: Ne révélez pas votre rôle durant la partie !");
                 }
 
@@ -507,11 +555,11 @@ public class LGGame implements Listener {
         broadcastMessage("§8§oLa nuit tombe sur le village...");
         for (LGPlayer player : getAlive())
             player.leaveChat();
+        daySongs.setPlaying(false);
         for (LGPlayer player : getInGame()) {
-            player.stopAudio(LGSound.AMBIANT_DAY);
             player.playAudio(LGSound.START_NIGHT, 0.5);
-            player.playAudio(LGSound.AMBIANT_NIGHT, 0.07);
         }
+        nightSongs.setPlaying(true);
         day = false;
         Bukkit.getPluginManager().callEvent(new LGDayEndEvent(this));
         for (LGPlayer player : getInGame())
@@ -668,6 +716,9 @@ public class LGGame implements Listener {
 
         broadcastSpacer();
 
+        daySongs.setPlaying(false);
+        nightSongs.setPlaying(false);
+
         for (LGPlayer lgp : getInGame()) {
             lgp.leaveChat();
             lgp.joinChat(spectatorChat);
@@ -713,11 +764,11 @@ public class LGGame implements Listener {
         broadcastMessage("§9----------- §lJour n°" + night + "§9 -----------");
         broadcastMessage("§8§oLe jour se lève sur le village...");
 
+        nightSongs.setPlaying(false);
         for (LGPlayer p : getInGame()) {
-            p.stopAudio(LGSound.AMBIANT_NIGHT);
             p.playAudio(LGSound.START_DAY, 0.5);
-            p.playAudio(LGSound.AMBIANT_DAY, 0.07);
         }
+        daySongs.setPlaying(true);
 
         LGNightEndEvent eventNightEnd = new LGNightEndEvent(this);
         Bukkit.getPluginManager().callEvent(eventNightEnd);
