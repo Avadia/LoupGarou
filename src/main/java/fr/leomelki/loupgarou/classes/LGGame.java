@@ -10,7 +10,10 @@ import com.xxmicloxx.NoteBlockAPI.model.RepeatMode;
 import com.xxmicloxx.NoteBlockAPI.model.playmode.StereoMode;
 import com.xxmicloxx.NoteBlockAPI.songplayer.RadioSongPlayer;
 import com.xxmicloxx.NoteBlockAPI.utils.NBSDecoder;
-import fr.leomelki.com.comphenix.packetwrapper.*;
+import fr.leomelki.com.comphenix.packetwrapper.WrapperPlayServerEntityDestroy;
+import fr.leomelki.com.comphenix.packetwrapper.WrapperPlayServerPlayerInfo;
+import fr.leomelki.com.comphenix.packetwrapper.WrapperPlayServerScoreboardTeam;
+import fr.leomelki.com.comphenix.packetwrapper.WrapperPlayServerUpdateTime;
 import fr.leomelki.fr.farmvivi.avadia.ItemBuilder;
 import fr.leomelki.loupgarou.MainLg;
 import fr.leomelki.loupgarou.arena.Arena;
@@ -118,11 +121,11 @@ public class LGGame implements Listener {
         waitTask = new BukkitRunnable() {
             @Override
             public void run() {
-                WrapperPlayServerExperience exp = new WrapperPlayServerExperience();
-                exp.setLevel((short) (Math.floorDiv(waitTicks, 20) + 1));
-                exp.setExperienceBar((float) waitTicks / (seconds * 20F));
+                final short level = (short) (Math.floorDiv(waitTicks, 20) + 1);
+                final float exp = waitTicks / (seconds * 20F);
                 for (LGPlayer player : getInGame()) {
-                    exp.sendPacket(player.getPlayer());
+                    player.getPlayer().setLevel(level);
+                    player.getPlayer().setExp(exp);
                     if (generator != null)
                         player.sendActionBarMessage(generator.generate(player, Math.floorDiv(waitTicks, 20) + 1));
                 }
@@ -144,11 +147,11 @@ public class LGGame implements Listener {
         waitTask = new BukkitRunnable() {
             @Override
             public void run() {
-                WrapperPlayServerExperience exp = new WrapperPlayServerExperience();
-                exp.setLevel((short) (Math.floorDiv(waitTicks, 20) + 1));
-                exp.setExperienceBar((float) waitTicks / (initialSeconds * 20F));
+                final short level = (short) (Math.floorDiv(waitTicks, 20) + 1);
+                final float exp = waitTicks / (initialSeconds * 20F);
                 for (LGPlayer player : getInGame()) {
-                    exp.sendPacket(player.getPlayer());
+                    player.getPlayer().setLevel(level);
+                    player.getPlayer().setExp(exp);
                     if (generator != null)
                         player.sendActionBarMessage(generator.generate(player, Math.floorDiv(waitTicks, 20) + 1));
                 }
@@ -274,8 +277,6 @@ public class LGGame implements Listener {
                 this.improvedScoreboard = new CustomScoreboard(this.inGame, shouldShowScoreboard);
                 this.improvedScoreboard.show();
 
-                mainLgInstance.setStartGame(true);
-
                 Playlist dayPlaylist = null;
                 File[] dayFolder = new File(MainLg.getInstance().getDataFolder(), "songs" + File.separator + "day").listFiles();
                 if (dayFolder != null) {
@@ -316,8 +317,8 @@ public class LGGame implements Listener {
                     final String meme = mainLgInstance.getRandomStartingMeme();
                     if (meme != null) {
                         lgp.sendMessage(meme);
-                        lgp.getPlayer().setSaturation(0f);
-                        lgp.getPlayer().setFoodLevel(6);
+                        lgp.getPlayer().setSaturation(0);
+                        lgp.getPlayer().setFoodLevel(0);
                         lgp.getPlayer().setWalkSpeed(0.2f);
                     }
                     daySongs.addPlayer(lgp.getPlayer());
@@ -366,11 +367,9 @@ public class LGGame implements Listener {
             placements.put(lgp.getPlace(), lgp);
             p.teleport(new Location(p.getWorld(), location.get(0) + 0.5, location.get(1), location.get(2) + 0.5,
                     location.get(3).floatValue(), location.get(4).floatValue()));
-            WrapperPlayServerUpdateHealth update = new WrapperPlayServerUpdateHealth();
-            update.setFood(6);
-            update.setFoodSaturation(1);
-            update.setHealth(20);
-            update.sendPacket(p);
+            p.setFoodLevel(20);
+            p.setSaturation(0);
+            p.setHealth(20);
         }
 
         try {
@@ -635,8 +634,6 @@ public class LGGame implements Listener {
                     .callEvent(new LGPlayerGotKilledEvent(this, killed, reason, !checkEndGame(false) && endGame));
 
             VariousUtils.setWarning(killed.getPlayer(), true);
-
-            killed.getPlayer().getInventory().setHelmet(new ItemStack(Material.PUMPKIN));
 
             LGCustomItems.updateItem(killed);
 

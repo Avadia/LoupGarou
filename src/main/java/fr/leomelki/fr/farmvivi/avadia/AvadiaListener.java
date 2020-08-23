@@ -2,7 +2,6 @@ package fr.leomelki.fr.farmvivi.avadia;
 
 import fr.leomelki.loupgarou.MainLg;
 import fr.leomelki.loupgarou.arena.Arena;
-import fr.leomelki.loupgarou.classes.LGGame;
 import fr.leomelki.loupgarou.events.LGGameEndEvent;
 import fr.leomelki.loupgarou.events.LGGameJoinEvent;
 import fr.leomelki.loupgarou.roles.Role;
@@ -17,7 +16,6 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.inventory.InventoryType;
 import org.bukkit.event.player.PlayerInteractEvent;
-import org.bukkit.event.server.ServerListPingEvent;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 
@@ -145,8 +143,6 @@ public class AvadiaListener implements Listener {
 
     @EventHandler
     public void onGameEnd(LGGameEndEvent event) {
-        MainLg.getInstance().setEndGame(true);
-        MainLg.getInstance().setStartGame(false);
         Bukkit.getScheduler().runTaskLater(MainLg.getInstance(), () -> {
             FileConfiguration config = MainLg.getInstance().getConfig();
             for (String role : getRoles().keySet())
@@ -154,26 +150,9 @@ public class AvadiaListener implements Listener {
             config.set("distributionFixed.Villageois", 12);
             config.set("distributionRandom.amountOfPlayers", 12);
             config.set("showScoreboard", true);
-            MainLg.getInstance().setEndGame(false);
             MainLg.getInstance().saveConfig();
             MainLg.getInstance().loadConfig();
         }, 100);
-    }
-
-    @EventHandler
-    public void onPing(ServerListPingEvent event) {
-        LGGame game = MainLg.getInstance().getCurrentGame();
-        event.setMaxPlayers(game.getMaxPlayers());
-        if (MainLg.getInstance().isStartGame()) {
-            event.setMotd("En jeu");
-        } else if (MainLg.getInstance().isEndGame()) {
-            event.setMotd("Partie terminé");
-        } else if (event.getNumPlayers() >= event.getMaxPlayers()) {
-            event.setMotd("En lancement");
-        } else {
-            event.setMotd("En attente");
-        }
-
     }
 
     private void setupItems(Player player) {

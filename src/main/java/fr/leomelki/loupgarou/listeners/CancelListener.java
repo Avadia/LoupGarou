@@ -37,7 +37,9 @@ public class CancelListener implements Listener {
 
     @EventHandler
     public void onFood(FoodLevelChangeEvent e) {
-        e.setFoodLevel(6);
+        if (e.getFoodLevel() == 0)
+            return;
+        e.setFoodLevel(20);
     }
 
     @EventHandler

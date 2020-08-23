@@ -40,8 +40,8 @@ public class JoinListener implements Listener {
                 team.sendPacket(p);
                 myTeam.sendPacket(player);
             }
-        p.setSaturation(10000);
-        p.setFoodLevel(10000);
+        p.setSaturation(0);
+        p.setFoodLevel(20);
         LGPlayer lgp = LGPlayer.thePlayer(e.getPlayer());
         lgp.showView();
         lgp.join(MainLg.getInstance().getCurrentGame());

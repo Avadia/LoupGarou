@@ -1,6 +1,5 @@
 package fr.leomelki.loupgarou.classes;
 
-import fr.leomelki.com.comphenix.packetwrapper.WrapperPlayServerUpdateHealth;
 import fr.leomelki.loupgarou.MainLg;
 import fr.leomelki.loupgarou.roles.Role;
 import lombok.Getter;
@@ -58,12 +57,6 @@ public class LGRoleDistributor {
 
     private void setRoleToPlayer(LGPlayer selected, Role givenRole) {
         givenRole.joinAndDisplayRole(selected);
-
-        WrapperPlayServerUpdateHealth update = new WrapperPlayServerUpdateHealth();
-        update.setFood(6);
-        update.setFoodSaturation(1);
-        update.setHealth(20);
-        update.sendPacket(selected.getPlayer());
     }
 
     public List<Role> assignRoles() {

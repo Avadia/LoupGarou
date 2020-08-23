@@ -61,12 +61,6 @@ public class MainLg extends JavaPlugin {
     @Getter
     @Setter
     private LGGame currentGame;// Because for now, only one game will be playable on one server (flemme)
-    @Getter
-    @Setter
-    private boolean endGame = false;
-    @Getter
-    @Setter
-    private boolean startGame = false;
     private List<String> startingMemes;
 
     public static MainLg getInstance() {
@@ -192,17 +186,6 @@ public class MainLg extends JavaPlugin {
                             }
                         }
                         info.setData(datas);
-                    }
-                });
-        protocolManager
-                .addPacketListener(new PacketAdapter(this, ListenerPriority.NORMAL, PacketType.Play.Server.UPDATE_HEALTH) {
-                    @Override
-                    public void onPacketSending(PacketEvent event) {
-                        LGPlayer player = LGPlayer.thePlayer(event.getPlayer());
-                        if (player.getGame() != null && player.getGame().isStarted()) {
-                            WrapperPlayServerUpdateHealth health = new WrapperPlayServerUpdateHealth(event.getPacket());
-                            health.setFood(6);
-                        }
                     }
                 });
         protocolManager
