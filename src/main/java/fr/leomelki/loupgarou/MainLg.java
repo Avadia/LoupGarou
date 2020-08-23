@@ -11,6 +11,8 @@ import com.comphenix.protocol.wrappers.PlayerInfoData;
 import com.comphenix.protocol.wrappers.WrappedChatComponent;
 import fr.leomelki.com.comphenix.packetwrapper.*;
 import fr.leomelki.fr.farmvivi.avadia.AvadiaListener;
+import fr.leomelki.loupgarou.arena.Arena;
+import fr.leomelki.loupgarou.arena.ArenaManager;
 import fr.leomelki.loupgarou.classes.LGCustomItems;
 import fr.leomelki.loupgarou.classes.LGGame;
 import fr.leomelki.loupgarou.classes.LGPlayer;
@@ -21,6 +23,7 @@ import fr.leomelki.loupgarou.listeners.*;
 import fr.leomelki.loupgarou.roles.*;
 import lombok.Getter;
 import lombok.Setter;
+import net.samagames.api.SamaGamesAPI;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
@@ -239,6 +242,9 @@ public class MainLg extends JavaPlugin {
                         }
                     }
                 });
+        Arena arena = new ArenaManager(this).loadArena();
+        SamaGamesAPI.get().getGameManager().registerGame(arena);
+        SamaGamesAPI.get().getGameManager().setKeepPlayerCache(true);
     }
 
     @Override

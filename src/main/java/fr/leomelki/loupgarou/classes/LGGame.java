@@ -13,6 +13,7 @@ import com.xxmicloxx.NoteBlockAPI.utils.NBSDecoder;
 import fr.leomelki.com.comphenix.packetwrapper.*;
 import fr.leomelki.fr.farmvivi.avadia.ItemBuilder;
 import fr.leomelki.loupgarou.MainLg;
+import fr.leomelki.loupgarou.arena.Arena;
 import fr.leomelki.loupgarou.classes.chat.LGChat;
 import fr.leomelki.loupgarou.events.*;
 import fr.leomelki.loupgarou.events.LGPlayerKilledEvent.Reason;
@@ -22,12 +23,12 @@ import fr.leomelki.loupgarou.utils.MultipleValueMap;
 import fr.leomelki.loupgarou.utils.VariousUtils;
 import lombok.Getter;
 import lombok.Setter;
+import net.samagames.api.SamaGamesAPI;
 import org.bukkit.*;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
-import org.bukkit.event.HandlerList;
 import org.bukkit.event.Listener;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.potion.PotionEffect;
@@ -92,13 +93,9 @@ public class LGGame implements Listener {
         Bukkit.getPluginManager().registerEvents(this, MainLg.getInstance());
     }
 
-    @SuppressWarnings("deprecation")
     public void sendActionBarMessage(String msg) {
-        WrapperPlayServerChat chat = new WrapperPlayServerChat();
-        chat.setPosition((byte) 2);
-        chat.setMessage(WrappedChatComponent.fromText(msg));
         for (LGPlayer lgp : inGame)
-            chat.sendPacket(lgp.getPlayer());
+            lgp.sendActionBarMessage(msg);
     }
 
     public void broadcastMessage(String msg) {
@@ -217,6 +214,7 @@ public class LGGame implements Listener {
             // End clear votes/voting
 
             player.getInventory().clear();
+            player.getInventory().setItem(8, SamaGamesAPI.get().getGameManager().getCoherenceMachine().getLeaveItem());
             player.updateInventory();
             player.closeInventory();
 
@@ -660,31 +658,7 @@ public class LGGame implements Listener {
     }
 
     private void showcaseVillage(List<LGPlayer> winners, LGWinType winType) {
-        final boolean shouldDisplayWinners = (!winners.isEmpty());
-
-        broadcastSpacer();
-        broadcastMessage("§9----------- §lFIN DE LA PARTIE -----------");
-        broadcastMessage(winType.getMessage());
-
-        if (shouldDisplayWinners) {
-            final List<String> winnerNames = winners.stream().map(LGPlayer::getFullName).collect(Collectors.toList());
-            final String winnersFriendlyName = (winners.size() > 1) ? "aux vainqueurs" : "au vainqueur";
-            broadcastMessage("§6§l§oFélicitations " + winnersFriendlyName + ": §7§l" + String.join(", §7", winnerNames));
-        }
-
-        broadcastSpacer();
-        broadcastMessage("§e§lLa composition du village à cette partie était la suivante");
-
-        // We unregister every role listener because they are unused after the game's
-        // end !
-        if (this.roles != null) {
-            for (Role role : this.roles) {
-                final List<String> playerNames = role.getPlayersThisRound().stream().map(LGPlayer::getFullName)
-                        .collect(Collectors.toList());
-                broadcastMessage("§e - " + role.getName() + " §e: §7§l" + String.join(", §7", playerNames));
-                HandlerList.unregisterAll(role);
-            }
-        }
+        ((Arena) (SamaGamesAPI.get().getGameManager().getGame())).win(winners, winType, this.roles);
     }
 
     @EventHandler(priority = EventPriority.LOWEST)

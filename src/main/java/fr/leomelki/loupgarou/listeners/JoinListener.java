@@ -11,25 +11,11 @@ import org.bukkit.GameMode;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
-import org.bukkit.event.player.PlayerJoinEvent;
-import org.bukkit.event.player.PlayerQuitEvent;
 import org.bukkit.potion.PotionEffectType;
 
 import java.util.Collections;
 
 public class JoinListener implements Listener {
-    @EventHandler
-    public void onJoin(PlayerJoinEvent e) {
-        Bukkit.getPluginManager().callEvent(new JoinEvent(e.getPlayer(), "is connected"));
-        e.setJoinMessage("");
-    }
-
-    @EventHandler
-    public void onQuit(PlayerQuitEvent e) {
-        Bukkit.getPluginManager().callEvent(new QuitEvent(e.getPlayer(), "is disconnected"));
-        e.setQuitMessage("");
-    }
-
     @SuppressWarnings("deprecation")
     @EventHandler
     public void onJoin(JoinEvent e) {

@@ -5,7 +5,6 @@ import com.comphenix.protocol.wrappers.EnumWrappers.PlayerInfoAction;
 import com.comphenix.protocol.wrappers.PlayerInfoData;
 import com.comphenix.protocol.wrappers.WrappedChatComponent;
 import com.comphenix.protocol.wrappers.WrappedGameProfile;
-import fr.leomelki.com.comphenix.packetwrapper.WrapperPlayServerChat;
 import fr.leomelki.com.comphenix.packetwrapper.WrapperPlayServerPlayerInfo;
 import fr.leomelki.com.comphenix.packetwrapper.WrapperPlayServerScoreboardTeam;
 import fr.leomelki.loupgarou.MainLg;
@@ -22,6 +21,7 @@ import net.minecraft.server.v1_12_R1.EnumGamemode;
 import net.minecraft.server.v1_12_R1.PacketPlayOutRespawn;
 import net.minecraft.server.v1_12_R1.WorldType;
 import net.samagames.tools.Titles;
+import net.samagames.tools.chat.ActionBarAPI;
 import org.bukkit.GameMode;
 import org.bukkit.Location;
 import org.bukkit.craftbukkit.v1_12_R1.entity.CraftPlayer;
@@ -82,14 +82,9 @@ public class LGPlayer {
         cachedPlayers.remove(player);
     }
 
-    @SuppressWarnings("deprecation")
     public void sendActionBarMessage(String msg) {
-        if (this.player != null) {
-            WrapperPlayServerChat serverChat = new WrapperPlayServerChat();
-            serverChat.setPosition((byte) 2);
-            serverChat.setMessage(WrappedChatComponent.fromText(msg));
-            serverChat.sendPacket(getPlayer());
-        }
+        if (this.player != null)
+            ActionBarAPI.sendMessage(player, msg);
     }
 
     public void sendMessage(String msg) {

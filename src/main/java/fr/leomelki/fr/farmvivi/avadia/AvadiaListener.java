@@ -1,11 +1,13 @@
 package fr.leomelki.fr.farmvivi.avadia;
 
 import fr.leomelki.loupgarou.MainLg;
+import fr.leomelki.loupgarou.arena.Arena;
 import fr.leomelki.loupgarou.classes.LGGame;
 import fr.leomelki.loupgarou.events.LGGameEndEvent;
 import fr.leomelki.loupgarou.events.LGGameJoinEvent;
 import fr.leomelki.loupgarou.roles.Role;
 import lombok.Getter;
+import net.samagames.api.SamaGamesAPI;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.configuration.file.FileConfiguration;
@@ -72,16 +74,10 @@ public class AvadiaListener implements Listener {
                 e.setCancelled(true);
 
                 if (item.getType() == Material.SHEARS) {
-                    MainLg.getInstance().getConfig().set("roleDistribution", "fixed");
-                    MainLg.getInstance().saveConfig();
-                    MainLg.getInstance().loadConfig();
+                    ((Arena) (SamaGamesAPI.get().getGameManager().getGame())).startManual();
                 } else if (item.getType() == Material.REDSTONE) {
-                    MainLg.getInstance().getConfig().set("roleDistribution", "random");
-                    Bukkit.dispatchCommand(p, "lg random players " + Bukkit.getOnlinePlayers().size());
+                    ((Arena) (SamaGamesAPI.get().getGameManager().getGame())).startAuto();
                 }
-
-                Bukkit.dispatchCommand(p, "lg joinAll");
-                Bukkit.dispatchCommand(p, "lg start " + p.getName());
 
                 break;
             case "Paramètres de la partie":
