@@ -57,7 +57,7 @@ public class Arena extends Game<GamePlayer> implements Listener {
         MainLg.getInstance().saveConfig();
         MainLg.getInstance().loadConfig();
 
-        startGame();
+        startCommon();
 
         Bukkit.dispatchCommand(Bukkit.getConsoleSender(), "lg joinAll");
         for (Player player : Bukkit.getOnlinePlayers()) {
@@ -70,7 +70,7 @@ public class Arena extends Game<GamePlayer> implements Listener {
         MainLg.getInstance().getConfig().set("roleDistribution", "random");
         Bukkit.dispatchCommand(Bukkit.getConsoleSender(), "lg random players " + Bukkit.getOnlinePlayers().size());
 
-        startGame();
+        startCommon();
 
         Bukkit.dispatchCommand(Bukkit.getConsoleSender(), "lg joinAll");
         for (Player player : Bukkit.getOnlinePlayers()) {
@@ -79,8 +79,7 @@ public class Arena extends Game<GamePlayer> implements Listener {
         }
     }
 
-    @Override
-    public void startGame() {
+    public void startCommon() {
         super.startGame();
 
 //        for (GamePlayer gamePlayer : this.getInGamePlayers().values()) {
@@ -88,6 +87,11 @@ public class Arena extends Game<GamePlayer> implements Listener {
 //
 //            //TODO: SamaGamesAPI.get().getStatsManager().getPlayerStats(player.getUniqueId()).getWerewolfStatistics().incrByPlayedGames(1);
 //        }
+    }
+
+    @Override
+    public void startGame() {
+        startAuto();
     }
 
     @Override
