@@ -41,7 +41,7 @@ class ParserGame extends ParserAbstract {
 
     protected void processStartGame(CommandSender sender, String[] args) {
         final boolean isTargetingPlayer = (args.length == 2);
-        final Player player = (isTargetingPlayer) ? Bukkit.getPlayer(args[1]) : (Player) sender;
+        final Player player = (isTargetingPlayer) ? Bukkit.getPlayer(args[1]) : Bukkit.getPlayer(sender.getName());
 
         if (isTargetingPlayer && player == null) {
             sender.sendMessage(PLAYER_ERROR_PREFIX + args[1] + "§c n'existe pas !");

@@ -53,24 +53,30 @@ public class Arena extends Game<GamePlayer> implements Listener {
     }
 
     public void startManual() {
-        startGame();
-
         MainLg.getInstance().getConfig().set("roleDistribution", "fixed");
         MainLg.getInstance().saveConfig();
         MainLg.getInstance().loadConfig();
 
+        startGame();
+
         Bukkit.dispatchCommand(Bukkit.getConsoleSender(), "lg joinAll");
-        Bukkit.dispatchCommand(Bukkit.getConsoleSender(), "lg start");
+        for (Player player : Bukkit.getOnlinePlayers()) {
+            Bukkit.dispatchCommand(Bukkit.getConsoleSender(), "lg start " + player.getName());
+            break;
+        }
     }
 
     public void startAuto() {
-        startGame();
-
         MainLg.getInstance().getConfig().set("roleDistribution", "random");
         Bukkit.dispatchCommand(Bukkit.getConsoleSender(), "lg random players " + Bukkit.getOnlinePlayers().size());
 
+        startGame();
+
         Bukkit.dispatchCommand(Bukkit.getConsoleSender(), "lg joinAll");
-        Bukkit.dispatchCommand(Bukkit.getConsoleSender(), "lg start");
+        for (Player player : Bukkit.getOnlinePlayers()) {
+            Bukkit.dispatchCommand(Bukkit.getConsoleSender(), "lg start " + player.getName());
+            break;
+        }
     }
 
     @Override
