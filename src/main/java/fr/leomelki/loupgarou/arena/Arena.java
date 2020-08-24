@@ -46,7 +46,7 @@ public class Arena extends Game<GamePlayer> implements Listener {
     private final Location spawn;
 
     public Arena(MainLg plugin, Location spawn) {
-        super("werewolf", "LoupGarou", "", GamePlayer.class);
+        super("werewolf", "LoupGarou", "Attention à ne pas vous faire manger !", GamePlayer.class);
 
         this.plugin = plugin;
         this.spawn = spawn;
