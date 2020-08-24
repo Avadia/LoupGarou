@@ -245,8 +245,8 @@ public class LGGame implements Listener {
                 lgp.updatePrefix();
             }
 
-            sendActionBarMessage("§7Le joueur §8" + lgp.getFullName() + "§7 a rejoint la partie §9(§8" + inGame.size() + "§7/§8"
-                    + maxPlayers + "§9)");
+//            sendActionBarMessage("§7Le joueur §8" + lgp.getFullName() + "§7 a rejoint la partie §9(§8" + inGame.size() + "§7/§8"
+//                    + maxPlayers + "§9)");
 
             Bukkit.getPluginManager().callEvent(new LGGameJoinEvent(this, lgp));
             // AutoStart
