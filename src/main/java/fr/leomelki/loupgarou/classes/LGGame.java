@@ -15,6 +15,7 @@ import fr.leomelki.com.comphenix.packetwrapper.WrapperPlayServerPlayerInfo;
 import fr.leomelki.com.comphenix.packetwrapper.WrapperPlayServerScoreboardTeam;
 import fr.leomelki.com.comphenix.packetwrapper.WrapperPlayServerUpdateTime;
 import fr.leomelki.fr.farmvivi.avadia.ItemBuilder;
+import fr.leomelki.fr.farmvivi.avadia.WarningMessageTemplate;
 import fr.leomelki.loupgarou.MainLg;
 import fr.leomelki.loupgarou.arena.Arena;
 import fr.leomelki.loupgarou.classes.chat.LGChat;
@@ -27,6 +28,7 @@ import fr.leomelki.loupgarou.utils.VariousUtils;
 import lombok.Getter;
 import lombok.Setter;
 import net.samagames.api.SamaGamesAPI;
+import net.samagames.tools.chat.ChatUtils;
 import org.bukkit.*;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.entity.Player;
@@ -72,7 +74,6 @@ public class LGGame implements Listener {
     private boolean started = false;
     @Getter
     private int night = 0;
-    private BukkitTask startingTask;
     @Getter
     @Setter
     private int waitTicks;
@@ -257,102 +258,75 @@ public class LGGame implements Listener {
         return false;
     }
 
-    public void checkLeave() {
-        if (startingTask != null) {
-            startingTask.cancel();
-            startingTask = null;
-            broadcastMessage("§c§oUn joueur s'est déconnecté. Le décompte de lancement a donc été arrêté.");
-        }
-    }
-
     public void updateStart() {
         if (!isStarted()) {
-            if (inGame.size() == maxPlayers) {// Il faut que la partie soit totalement remplie pour qu'elle démarre car sinon,
-                // tous les rôles ne seraient pas distribués
-                final MainLg mainLgInstance = MainLg.getInstance();
-                final FileConfiguration config = mainLgInstance.getConfig();
-                final boolean shouldShowScoreboard = config.getBoolean("showScoreboard");
+            started = true;
 
-                this.roleDistributor = new LGRoleDistributor(this, config, mainLgInstance.getRolesBuilder());
-                this.improvedScoreboard = new CustomScoreboard(this.inGame, shouldShowScoreboard);
-                this.improvedScoreboard.show();
+            new WarningMessageTemplate().execute(new ArrayList<>(Collections.singletonList(
+                    ChatUtils.getCenteredText(ChatColor.RED + "Ne révélez pas votre rôle durant la partie !"))));
 
-                Playlist dayPlaylist = null;
-                File[] dayFolder = new File(MainLg.getInstance().getDataFolder(), "songs" + File.separator + "day").listFiles();
-                if (dayFolder != null) {
-                    for (File song : dayFolder) {
-                        if (dayPlaylist == null) {
-                            dayPlaylist = new Playlist(NBSDecoder.parse(song));
-                        } else {
-                            dayPlaylist.add(NBSDecoder.parse(song));
-                        }
+            final MainLg mainLgInstance = MainLg.getInstance();
+            final FileConfiguration config = mainLgInstance.getConfig();
+            final boolean shouldShowScoreboard = config.getBoolean("showScoreboard");
+
+            this.roleDistributor = new LGRoleDistributor(this, config, mainLgInstance.getRolesBuilder());
+            this.improvedScoreboard = new CustomScoreboard(this.inGame, shouldShowScoreboard);
+            this.improvedScoreboard.show();
+
+            Playlist dayPlaylist = null;
+            File[] dayFolder = new File(MainLg.getInstance().getDataFolder(), "songs" + File.separator + "day").listFiles();
+            if (dayFolder != null) {
+                for (File song : dayFolder) {
+                    if (dayPlaylist == null) {
+                        dayPlaylist = new Playlist(NBSDecoder.parse(song));
+                    } else {
+                        dayPlaylist.add(NBSDecoder.parse(song));
                     }
                 }
-                daySongs = new RadioSongPlayer(dayPlaylist);
-                daySongs.setRandom(true);
-                daySongs.setRepeatMode(RepeatMode.ALL);
-                daySongs.setChannelMode(new StereoMode());
-                daySongs.setVolume((byte) 7);
-                daySongs.setPlaying(false);
-
-                Playlist nightPlaylist = null;
-                File[] nightFolder = new File(MainLg.getInstance().getDataFolder(), "songs" + File.separator + "night").listFiles();
-                if (nightFolder != null) {
-                    for (File song : nightFolder) {
-                        if (nightPlaylist == null) {
-                            nightPlaylist = new Playlist(NBSDecoder.parse(song));
-                        } else {
-                            nightPlaylist.add(NBSDecoder.parse(song));
-                        }
-                    }
-                }
-                nightSongs = new RadioSongPlayer(nightPlaylist);
-                nightSongs.setRandom(true);
-                nightSongs.setRepeatMode(RepeatMode.ALL);
-                nightSongs.setChannelMode(new StereoMode());
-                nightSongs.setVolume((byte) 7);
-                nightSongs.setPlaying(false);
-
-                for (LGPlayer lgp : getInGame()) {
-                    final String meme = mainLgInstance.getRandomStartingMeme();
-                    if (meme != null) {
-                        lgp.sendMessage(meme);
-                        lgp.getPlayer().setSaturation(0);
-                        lgp.getPlayer().setFoodLevel(0);
-                        lgp.getPlayer().setWalkSpeed(0.2f);
-                    }
-                    daySongs.addPlayer(lgp.getPlayer());
-                    nightSongs.addPlayer(lgp.getPlayer());
-                    lgp.sendMessage("§c§lATTENTION: Ne révélez pas votre rôle durant la partie !");
-                }
-
-                if (startingTask == null) {
-                    startingTask = new BukkitRunnable() {
-                        int timeLeft = 5 + 1;
-
-                        @Override
-                        public void run() {
-                            if (--timeLeft == 0)// start
-                                start();
-                            else
-                                sendActionBarMessage("§6Démarrage dans §e" + timeLeft + "§6...");
-                        }
-                    }.runTaskTimer(MainLg.getInstance(), 20, 20);
-                }
-            } else if (startingTask != null) {
-                startingTask.cancel();
-                broadcastMessage("§c§oLe démarrage de la partie a été annulé car une personne l'a quittée !");
             }
+            daySongs = new RadioSongPlayer(dayPlaylist);
+            daySongs.setRandom(true);
+            daySongs.setRepeatMode(RepeatMode.ALL);
+            daySongs.setChannelMode(new StereoMode());
+            daySongs.setVolume((byte) 7);
+            daySongs.setPlaying(false);
+
+            Playlist nightPlaylist = null;
+            File[] nightFolder = new File(MainLg.getInstance().getDataFolder(), "songs" + File.separator + "night").listFiles();
+            if (nightFolder != null) {
+                for (File song : nightFolder) {
+                    if (nightPlaylist == null) {
+                        nightPlaylist = new Playlist(NBSDecoder.parse(song));
+                    } else {
+                        nightPlaylist.add(NBSDecoder.parse(song));
+                    }
+                }
+            }
+            nightSongs = new RadioSongPlayer(nightPlaylist);
+            nightSongs.setRandom(true);
+            nightSongs.setRepeatMode(RepeatMode.ALL);
+            nightSongs.setChannelMode(new StereoMode());
+            nightSongs.setVolume((byte) 7);
+            nightSongs.setPlaying(false);
+
+            for (LGPlayer lgp : getInGame()) {
+                final String meme = mainLgInstance.getRandomStartingMeme();
+                if (meme != null) {
+                    lgp.sendMessage(meme);
+                    lgp.getPlayer().setSaturation(0);
+                    lgp.getPlayer().setFoodLevel(0);
+                    lgp.getPlayer().setWalkSpeed(0.2f);
+                }
+                daySongs.addPlayer(lgp.getPlayer());
+                nightSongs.addPlayer(lgp.getPlayer());
+            }
+
+            start();
         }
     }
 
     public void start() {
-        if (startingTask != null) {
-            startingTask.cancel();
-            startingTask = null;
-        }
         MainLg.getInstance().loadConfig();
-        started = true;
 
         // Registering roles
         List<?> original = MainLg.getInstance().getConfig().getList("spawns");
@@ -375,7 +349,7 @@ public class LGGame implements Listener {
         try {
             roles = this.roleDistributor.assignRoles();
         } catch (Exception err) {
-            Bukkit.broadcastMessage("§4§lUne erreur est survenue lors de la création des roles... Regardez la console !");
+            Bukkit.broadcastMessage("§4§lUne erreur est survenue lors de la création des roles... Contactez le staff !");
             err.printStackTrace();
         }
 
@@ -412,8 +386,6 @@ public class LGGame implements Listener {
     }
 
     private void _start() {
-        broadcastMessage("§8§oDébut de la partie...");
-
         Bukkit.getServer().getScheduler().runTaskTimerAsynchronously(MainLg.getInstance(), new Runnable() {
             private int time = 0;
 

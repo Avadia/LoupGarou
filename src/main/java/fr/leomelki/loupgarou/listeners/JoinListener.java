@@ -61,7 +61,6 @@ public class JoinListener implements Listener {
             if (lgp.getRole() != null && !lgp.isDead())
                 lgp.getGame().kill(lgp, Reason.DISCONNECTED, true);
             lgp.getGame().getInGame().remove(lgp);
-            lgp.getGame().checkLeave();
         }
         LGPlayer.removePlayer(p);
         lgp.remove();
