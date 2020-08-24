@@ -13,6 +13,7 @@ import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
+import org.bukkit.event.block.Action;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.inventory.InventoryType;
 import org.bukkit.event.player.PlayerInteractEvent;
@@ -45,6 +46,11 @@ public class AvadiaListener implements Listener {
             gui.setItem(1, new ItemBuilder(Material.LEVER).name("§aLancer la partie").make());
             gui.setItem(3, new ItemBuilder(Material.TRIPWIRE_HOOK).name("§6Paramètres de la partie").make());
             p.openInventory(gui);
+        }
+
+        if (e.getAction().equals(Action.RIGHT_CLICK_AIR) || e.getAction().equals(Action.RIGHT_CLICK_BLOCK)) {
+            if (e.getItem() != null && e.getItem().getType().equals(Material.WOOD_DOOR))
+                SamaGamesAPI.get().getGameManager().kickPlayer(e.getPlayer(), null);
         }
     }
 
