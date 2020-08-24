@@ -370,7 +370,6 @@ public class LGGame implements Listener {
                         lgp.getPlayer().getInventory().clear();
                         lgp.getPlayer().updateInventory();
                     }
-                    broadcastMessage("§2Attribution des rôles...");
                 }
 
                 if (--actualRole < 0)
