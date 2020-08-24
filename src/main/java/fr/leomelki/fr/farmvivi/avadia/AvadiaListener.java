@@ -38,25 +38,12 @@ public class AvadiaListener implements Listener {
 
         if (item == null) return;
 
-        if (item.getType().equals(Material.TRIPWIRE_HOOK)) {
+        if (item.getType().equals(Material.REDSTONE_COMPARATOR)) {
             Player p = e.getPlayer();
 
-            Inventory gui = Bukkit.createInventory(null, InventoryType.HOPPER, "Paramètres de la partie");
-            gui.setItem(1, new ItemBuilder(Material.SKULL_ITEM).durability(3).name("§6Choisir les rôles (manuel)").make());
-            ItemBuilder scoreboard = new ItemBuilder(Material.WATCH);
-            if (MainLg.getInstance().getConfig().getBoolean("showScoreboard")) {
-                scoreboard.name("§eCacher les rôles");
-            } else {
-                scoreboard.name("§eAfficher les rôles");
-            }
-            gui.setItem(3, scoreboard.make());
-            p.openInventory(gui);
-        } else if (item.getType().equals(Material.LEVER)) {
-            Player p = e.getPlayer();
-
-            Inventory gui = Bukkit.createInventory(null, InventoryType.HOPPER, "Lancement de la partie");
-            gui.setItem(1, new ItemBuilder(Material.SHEARS).name("§7Mode manuel").make());
-            gui.setItem(3, new ItemBuilder(Material.REDSTONE).name("§cMode automatique").make());
+            Inventory gui = Bukkit.createInventory(null, InventoryType.HOPPER, "Options");
+            gui.setItem(1, new ItemBuilder(Material.LEVER).name("§aLancer la partie").make());
+            gui.setItem(3, new ItemBuilder(Material.TRIPWIRE_HOOK).name("§6Paramètres de la partie").make());
             p.openInventory(gui);
         }
     }
@@ -68,6 +55,28 @@ public class AvadiaListener implements Listener {
             return;
         ItemStack item = e.getCurrentItem();
         switch (e.getView().getTitle()) {
+            case "Options":
+                e.setCancelled(true);
+
+                if (item.getType() == Material.LEVER) {
+                    Inventory gui = Bukkit.createInventory(null, InventoryType.HOPPER, "Lancement de la partie");
+                    gui.setItem(1, new ItemBuilder(Material.SHEARS).name("§7Mode manuel").make());
+                    gui.setItem(3, new ItemBuilder(Material.REDSTONE).name("§cMode automatique").make());
+                    p.openInventory(gui);
+                } else if (item.getType() == Material.TRIPWIRE_HOOK) {
+                    Inventory gui = Bukkit.createInventory(null, InventoryType.HOPPER, "Paramètres de la partie");
+                    gui.setItem(1, new ItemBuilder(Material.SKULL_ITEM).durability(3).name("§6Choisir les rôles (manuel)").make());
+                    ItemBuilder scoreboard = new ItemBuilder(Material.WATCH);
+                    if (MainLg.getInstance().getConfig().getBoolean("showScoreboard")) {
+                        scoreboard.name("§eCacher les rôles");
+                    } else {
+                        scoreboard.name("§eAfficher les rôles");
+                    }
+                    gui.setItem(3, scoreboard.make());
+                    p.openInventory(gui);
+                }
+
+                break;
             case "Lancement de la partie":
                 e.setCancelled(true);
 
@@ -157,8 +166,7 @@ public class AvadiaListener implements Listener {
 
     private void setupItems(Player player) {
         if (player.hasPermission("loupgarou.admin")) {
-            player.getInventory().setItem(7, new ItemBuilder(Material.TRIPWIRE_HOOK).name("§6Paramètres de la partie").make());
-            player.getInventory().setItem(1, new ItemBuilder(Material.LEVER).name("§aLancer la partie").make());
+            player.getInventory().setItem(7, new ItemBuilder(Material.REDSTONE_COMPARATOR).name("§c§lOptions").make());
         }
     }
 
