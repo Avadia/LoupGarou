@@ -1,11 +1,12 @@
 package fr.leomelki.loupgarou.classes;
 
-import com.comphenix.protocol.wrappers.EnumWrappers.ItemSlot;
 import com.comphenix.protocol.wrappers.WrappedDataWatcher;
 import com.comphenix.protocol.wrappers.WrappedDataWatcher.WrappedDataWatcherObject;
 import com.comphenix.protocol.wrappers.WrappedWatchableObject;
-import fr.leomelki.com.comphenix.packetwrapper.*;
-import fr.leomelki.loupgarou.MainLg;
+import fr.leomelki.com.comphenix.packetwrapper.WrapperPlayServerEntityDestroy;
+import fr.leomelki.com.comphenix.packetwrapper.WrapperPlayServerEntityLook;
+import fr.leomelki.com.comphenix.packetwrapper.WrapperPlayServerEntityMetadata;
+import fr.leomelki.com.comphenix.packetwrapper.WrapperPlayServerSpawnEntityLiving;
 import fr.leomelki.loupgarou.classes.LGGame.TextGenerator;
 import fr.leomelki.loupgarou.classes.LGPlayer.LGChooseCallback;
 import fr.leomelki.loupgarou.events.LGVoteLeaderChange;
@@ -14,12 +15,9 @@ import lombok.Getter;
 import net.minecraft.server.v1_12_R1.*;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
-import org.bukkit.Material;
 import org.bukkit.craftbukkit.v1_12_R1.CraftWorld;
 import org.bukkit.craftbukkit.v1_12_R1.entity.CraftPlayer;
 import org.bukkit.entity.EntityType;
-import org.bukkit.inventory.ItemStack;
-import org.bukkit.scheduler.BukkitRunnable;
 
 import java.lang.reflect.Field;
 import java.util.*;
@@ -320,7 +318,7 @@ public class LGVote {
 
             WrapperPlayServerSpawnEntityLiving spawn = new WrapperPlayServerSpawnEntityLiving();
             spawn.setEntityID(entityId);
-            spawn.setType(EntityType.DROPPED_ITEM);
+            spawn.setType(EntityType.ARMOR_STAND);
             spawn.setX(loc.getX());
             spawn.setY(loc.getY() + 0.3);
             spawn.setZ(loc.getZ());
@@ -352,7 +350,7 @@ public class LGVote {
         if (ofWho != null) {
             WrapperPlayServerSpawnEntityLiving spawn = new WrapperPlayServerSpawnEntityLiving();
             spawn.setEntityID(entityId);
-            spawn.setType(EntityType.DROPPED_ITEM);
+            spawn.setType(EntityType.ARMOR_STAND);
             Location loc = ofWho.getPlayer().getLocation();
             spawn.setX(loc.getX());
             spawn.setY(loc.getY() + 1.3);
@@ -377,18 +375,6 @@ public class LGVote {
             look.setPitch(0);
             look.setYaw(yaw);
             look.sendPacket(to.getPlayer());
-
-            new BukkitRunnable() {
-                @Override
-                public void run() {
-                    WrapperPlayServerEntityEquipment equip = new WrapperPlayServerEntityEquipment();
-                    equip.setEntityID(entityId);
-                    equip.setSlot(ItemSlot.HEAD);
-                    ItemStack skull = new ItemStack(Material.EMERALD);
-                    equip.setItem(skull);
-                    equip.sendPacket(to.getPlayer());
-                }
-            }.runTaskLater(MainLg.getInstance(), 2);
         }
     }
 
@@ -399,7 +385,7 @@ public class LGVote {
         if (ofWho != null) {
             WrapperPlayServerSpawnEntityLiving spawn = new WrapperPlayServerSpawnEntityLiving();
             spawn.setEntityID(entityId);
-            spawn.setType(EntityType.DROPPED_ITEM);
+            spawn.setType(EntityType.ARMOR_STAND);
             Location loc = ofWho.getPlayer().getLocation();
             spawn.setX(loc.getX());
             spawn.setY(loc.getY() + 1.3);
@@ -424,18 +410,6 @@ public class LGVote {
             look.setPitch(0);
             look.setYaw(yaw);
             look.sendPacket(to.getPlayer());
-
-            new BukkitRunnable() {
-                @Override
-                public void run() {
-                    WrapperPlayServerEntityEquipment equip = new WrapperPlayServerEntityEquipment();
-                    equip.setEntityID(entityId);
-                    equip.setSlot(ItemSlot.HEAD);
-                    ItemStack skull = new ItemStack(Material.EMERALD);
-                    equip.setItem(skull);
-                    equip.sendPacket(to.getPlayer());
-                }
-            }.runTaskLater(MainLg.getInstance(), 2);
         }
     }
 

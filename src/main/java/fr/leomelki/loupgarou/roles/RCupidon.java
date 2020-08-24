@@ -1,30 +1,51 @@
 package fr.leomelki.loupgarou.roles;
 
-import com.comphenix.protocol.wrappers.EnumWrappers.ItemSlot;
 import com.comphenix.protocol.wrappers.WrappedDataWatcher;
 import com.comphenix.protocol.wrappers.WrappedDataWatcher.WrappedDataWatcherObject;
-import com.comphenix.protocol.wrappers.WrappedWatchableObject;
-import fr.leomelki.com.comphenix.packetwrapper.*;
-import fr.leomelki.loupgarou.MainLg;
+import fr.leomelki.com.comphenix.packetwrapper.WrapperPlayServerEntityDestroy;
+import fr.leomelki.com.comphenix.packetwrapper.WrapperPlayServerEntityLook;
+import fr.leomelki.com.comphenix.packetwrapper.WrapperPlayServerSpawnEntityLiving;
 import fr.leomelki.loupgarou.classes.LGGame;
 import fr.leomelki.loupgarou.classes.LGPlayer;
 import fr.leomelki.loupgarou.classes.LGWinType;
 import fr.leomelki.loupgarou.events.*;
 import fr.leomelki.loupgarou.events.LGPlayerKilledEvent.Reason;
+import net.minecraft.server.v1_12_R1.*;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
-import org.bukkit.Material;
+import org.bukkit.craftbukkit.v1_12_R1.CraftWorld;
+import org.bukkit.craftbukkit.v1_12_R1.entity.CraftPlayer;
 import org.bukkit.entity.EntityType;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.player.AsyncPlayerChatEvent;
-import org.bukkit.inventory.ItemStack;
-import org.bukkit.scheduler.BukkitRunnable;
 
+import java.lang.reflect.Field;
 import java.util.ArrayList;
-import java.util.Arrays;
 
 public class RCupidon extends Role {
+    private static final EntityArmorStand eas = new EntityArmorStand(((CraftWorld) Bukkit.getWorlds().get(0)).getHandle(),
+            0, 0, 0);
+    private static DataWatcherObject<String> aB;
+    private static DataWatcherObject<Boolean> aC;
+    private static DataWatcherObject<Byte> Z;
+
+    static {
+        try {
+            Field f = Entity.class.getDeclaredField("aB");
+            f.setAccessible(true);
+            aB = (DataWatcherObject<String>) f.get(null);
+            f = Entity.class.getDeclaredField("aC");
+            f.setAccessible(true);
+            aC = (DataWatcherObject<Boolean>) f.get(null);
+            f = Entity.class.getDeclaredField("Z");
+            f.setAccessible(true);
+            Z = (DataWatcherObject<Byte>) f.get(null);
+        } catch (Exception err) {
+            err.printStackTrace();
+        }
+    }
+
     private static final String CUPIDON_FIRST = "cupidon_first";
     private static final String IN_LOVE = "in_love";
 
@@ -151,10 +172,10 @@ public class RCupidon extends Role {
         int entityId = Integer.MAX_VALUE - ofWho.getPlayer().getEntityId();
         WrapperPlayServerSpawnEntityLiving spawn = new WrapperPlayServerSpawnEntityLiving();
         spawn.setEntityID(entityId);
-        spawn.setType(EntityType.DROPPED_ITEM);
+        spawn.setType(EntityType.ARMOR_STAND);
         Location loc = ofWho.getPlayer().getLocation();
         spawn.setX(loc.getX());
-        spawn.setY(loc.getY() + 1.9);
+        spawn.setY(loc.getY() + 0.3/*1.9*/);
         spawn.setZ(loc.getZ());
         spawn.setHeadPitch(0);
         Location toLoc = to.getPlayer().getLocation();
@@ -163,7 +184,15 @@ public class RCupidon extends Role {
         float yaw = 180 - ((float) Math.toDegrees(Math.atan2(diffX, diffZ)));
 
         spawn.setYaw(yaw);
+
+        DataWatcher datawatcher = new DataWatcher(eas);
+        datawatcher.register(Z, (byte) 0x20);
+        datawatcher.register(aB, "§c§l♡");
+        datawatcher.register(aC, true);
+        PacketPlayOutEntityMetadata meta = new PacketPlayOutEntityMetadata(entityId, datawatcher, true);
+
         spawn.sendPacket(to.getPlayer());
+        ((CraftPlayer) to.getPlayer()).getHandle().playerConnection.sendPacket(meta);
 
         WrapperPlayServerEntityLook look = new WrapperPlayServerEntityLook();
         look.setEntityID(entityId);
@@ -171,24 +200,11 @@ public class RCupidon extends Role {
         look.setYaw(yaw);
         look.sendPacket(to.getPlayer());
 
-        WrapperPlayServerEntityMetadata meta = new WrapperPlayServerEntityMetadata();
-        meta.setEntityID(entityId);
-        meta.setMetadata(
-                Arrays.asList(new WrappedWatchableObject(invisible, (byte) 0x20), new WrappedWatchableObject(noGravity, true)));
-        meta.sendPacket(to.getPlayer());
-
-        new BukkitRunnable() {
-            @Override
-            public void run() {
-                WrapperPlayServerEntityEquipment equip = new WrapperPlayServerEntityEquipment();
-                equip.setEntityID(entityId);
-                equip.setSlot(ItemSlot.HEAD);
-
-                ItemStack skull = new ItemStack(Material.SUGAR);
-                equip.setItem(skull);
-                equip.sendPacket(to.getPlayer());
-            }
-        }.runTaskLater(MainLg.getInstance(), 2);
+//        WrapperPlayServerEntityMetadata meta = new WrapperPlayServerEntityMetadata();
+//        meta.setEntityID(entityId);
+//        meta.setMetadata(
+//                Arrays.asList(new WrappedWatchableObject(invisible, (byte) 0x20), new WrappedWatchableObject(noGravity, true)));
+//        meta.sendPacket(to.getPlayer());
     }
 
     @Override

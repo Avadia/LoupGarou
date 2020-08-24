@@ -1,6 +1,7 @@
 package fr.leomelki.loupgarou.listeners;
 
 import fr.leomelki.loupgarou.classes.LGPlayer;
+import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -55,7 +56,8 @@ public class CancelListener implements Listener {
 
     @EventHandler
     public void onEntitySpawn(EntitySpawnEvent e) {
-        e.setCancelled(true);
+        if (!e.getEntityType().equals(EntityType.ARMOR_STAND))
+            e.setCancelled(true);
     }
 
     @EventHandler
