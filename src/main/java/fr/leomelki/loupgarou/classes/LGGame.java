@@ -15,7 +15,6 @@ import fr.leomelki.com.comphenix.packetwrapper.WrapperPlayServerPlayerInfo;
 import fr.leomelki.com.comphenix.packetwrapper.WrapperPlayServerScoreboardTeam;
 import fr.leomelki.com.comphenix.packetwrapper.WrapperPlayServerUpdateTime;
 import fr.leomelki.fr.farmvivi.avadia.ItemBuilder;
-import fr.leomelki.fr.farmvivi.avadia.WarningMessageTemplate;
 import fr.leomelki.loupgarou.MainLg;
 import fr.leomelki.loupgarou.arena.Arena;
 import fr.leomelki.loupgarou.classes.chat.LGChat;
@@ -28,7 +27,6 @@ import fr.leomelki.loupgarou.utils.VariousUtils;
 import lombok.Getter;
 import lombok.Setter;
 import net.samagames.api.SamaGamesAPI;
-import net.samagames.tools.chat.ChatUtils;
 import org.bukkit.*;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.entity.Player;
@@ -262,8 +260,7 @@ public class LGGame implements Listener {
         if (!isStarted()) {
             started = true;
 
-            new WarningMessageTemplate().execute(new ArrayList<>(Collections.singletonList(
-                    ChatUtils.getCenteredText(ChatColor.RED + "Ne révélez pas votre rôle durant la partie !"))));
+            broadcastMessage(ChatColor.RED + "" + ChatColor.BOLD + "Attention !" + ChatColor.RESET + ChatColor.RED + "Ne révélez pas votre rôle durant la partie !");
 
             final MainLg mainLgInstance = MainLg.getInstance();
             final FileConfiguration config = mainLgInstance.getConfig();
