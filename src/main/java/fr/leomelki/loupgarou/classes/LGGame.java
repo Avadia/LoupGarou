@@ -260,7 +260,7 @@ public class LGGame implements Listener {
         if (!isStarted()) {
             started = true;
 
-            broadcastMessage(ChatColor.RED + "" + ChatColor.BOLD + "Attention !" + ChatColor.RESET + ChatColor.RED + "Ne révélez pas votre rôle durant la partie !");
+            broadcastMessage(ChatColor.RED + "" + ChatColor.BOLD + "Attention !" + ChatColor.RESET + ChatColor.RED + " Ne révélez pas votre rôle durant la partie !");
 
             final MainLg mainLgInstance = MainLg.getInstance();
             final FileConfiguration config = mainLgInstance.getConfig();
