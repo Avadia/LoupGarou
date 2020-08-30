@@ -272,7 +272,7 @@ public class LGGame implements Listener {
 
             Playlist dayPlaylist = null;
             File[] dayFolder = new File(MainLg.getInstance().getDataFolder(), "songs" + File.separator + "day").listFiles();
-            if (dayFolder != null) {
+            if (dayFolder != null && dayFolder.length != 0) {
                 for (File song : dayFolder) {
                     if (dayPlaylist == null) {
                         dayPlaylist = new Playlist(NBSDecoder.parse(song));
@@ -290,7 +290,7 @@ public class LGGame implements Listener {
 
             Playlist nightPlaylist = null;
             File[] nightFolder = new File(MainLg.getInstance().getDataFolder(), "songs" + File.separator + "night").listFiles();
-            if (nightFolder != null) {
+            if (nightFolder != null && nightFolder.length != 0) {
                 for (File song : nightFolder) {
                     if (nightPlaylist == null) {
                         nightPlaylist = new Playlist(NBSDecoder.parse(song));
