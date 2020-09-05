@@ -187,7 +187,7 @@ public class RCupidon extends Role {
 
         DataWatcher datawatcher = new DataWatcher(eas);
         datawatcher.register(Z, (byte) 0x20);
-        datawatcher.register(aB, "§c§l♡");
+        datawatcher.register(aB, "§d§l♡");
         datawatcher.register(aC, true);
         PacketPlayOutEntityMetadata meta = new PacketPlayOutEntityMetadata(entityId, datawatcher, true);
 
