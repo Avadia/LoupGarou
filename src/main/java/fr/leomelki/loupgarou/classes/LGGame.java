@@ -531,12 +531,13 @@ public class LGGame implements Listener {
         night++;
         if (SamaGamesAPI.get().getGameManager().getGame().hasDiscordChannel())
             Bukkit.getScheduler().runTaskAsynchronously(SamaGamesAPI.get().getPlugin(), () -> {
-                List<UUID> playersToMute = new ArrayList<>();
                 for (LGPlayer player : getInGame()) {
-                    if (player.isDiscord())
+                    if (player.isDiscord()) {
+                        List<UUID> playersToMute = new ArrayList<>();
                         playersToMute.add(player.getPlayer().getUniqueId());
+                        DiscordAPI.mutePlayers(playersToMute);
+                    }
                 }
-                DiscordAPI.mutePlayers(playersToMute);
             });
         broadcastSpacer();
         broadcastMessage("§9----------- §lNuit n°" + night + "§9 -----------");
@@ -663,12 +664,13 @@ public class LGGame implements Listener {
 
         if (SamaGamesAPI.get().getGameManager().getGame().hasDiscordChannel())
             Bukkit.getScheduler().runTaskAsynchronously(SamaGamesAPI.get().getPlugin(), () -> {
-                List<UUID> playersToUnmute = new ArrayList<>();
                 for (LGPlayer player : getInGame()) {
-                    if (player.isDiscord())
+                    if (player.isDiscord()) {
+                        List<UUID> playersToUnmute = new ArrayList<>();
                         playersToUnmute.add(player.getPlayer().getUniqueId());
+                        DiscordAPI.unmutePlayers(playersToUnmute);
+                    }
                 }
-                DiscordAPI.unmutePlayers(playersToUnmute);
             });
 
         ArrayList<LGPlayer> winners = new ArrayList<>();
@@ -735,12 +737,13 @@ public class LGGame implements Listener {
             return;
         if (SamaGamesAPI.get().getGameManager().getGame().hasDiscordChannel())
             Bukkit.getScheduler().runTaskAsynchronously(SamaGamesAPI.get().getPlugin(), () -> {
-                List<UUID> playersToUnmute = new ArrayList<>();
                 for (LGPlayer player : getAlive()) {
-                    if (player.isDiscord())
+                    if (player.isDiscord()) {
+                        List<UUID> playersToUnmute = new ArrayList<>();
                         playersToUnmute.add(player.getPlayer().getUniqueId());
+                        DiscordAPI.unmutePlayers(playersToUnmute);
+                    }
                 }
-                DiscordAPI.unmutePlayers(playersToUnmute);
             });
         broadcastSpacer();
         broadcastMessage("§9----------- §lJour n°" + night + "§9 -----------");
