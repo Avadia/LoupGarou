@@ -742,6 +742,8 @@ public class LGGame implements Listener {
                 }
                 DiscordAPI.unmutePlayers(playersToUnmute);
             });
+        for (LGPlayer p : getAlive())
+            SamaGamesAPI.get().getGameManager().getGame().addCoins(p.getPlayer(), 3, "Survivre à une nuit");
         broadcastSpacer();
         broadcastMessage("§9----------- §lJour n°" + night + "§9 -----------");
         broadcastMessage("§8§oLe jour se lève sur le village...");
