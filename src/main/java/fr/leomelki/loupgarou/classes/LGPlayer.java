@@ -65,6 +65,9 @@ public class LGPlayer {
     private String name;
     @Getter
     private LGChat chat;
+    @Getter
+    @Setter
+    private boolean discord = false;
 
     public LGPlayer(Player player) {
         this.player = player;

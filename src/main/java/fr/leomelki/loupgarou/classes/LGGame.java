@@ -27,6 +27,7 @@ import fr.leomelki.loupgarou.utils.VariousUtils;
 import lombok.Getter;
 import lombok.Setter;
 import net.samagames.api.SamaGamesAPI;
+import net.samagames.tools.discord.DiscordAPI;
 import org.bukkit.*;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.entity.Player;
@@ -219,6 +220,19 @@ public class LGGame implements Listener {
             player.getInventory().setItem(8, SamaGamesAPI.get().getGameManager().getCoherenceMachine().getLeaveItem());
             player.updateInventory();
             player.closeInventory();
+
+            if (SamaGamesAPI.get().getGameManager().getGame().hasDiscordChannel() && SamaGamesAPI.get().getPlayerManager().getPlayerData(lgp.getPlayer().getUniqueId()).isLinkedToDiscord()) {
+                Bukkit.getScheduler().runTaskAsynchronously(SamaGamesAPI.get().getPlugin(), () -> {
+                    lgp.sendActionBarMessage("Vérification de votre lien Discord...");
+                    if (DiscordAPI.isConnected(lgp.getPlayer().getUniqueId())) {
+                        lgp.setDiscord(true);
+                        lgp.sendActionBarMessage("Discord: " + ChatColor.GREEN + "Connecté");
+                    } else {
+                        lgp.setDiscord(false);
+                        lgp.sendActionBarMessage("Discord: " + ChatColor.RED + "Déconnecté");
+                    }
+                });
+            }
 
             lgp.joinChat(dayChat);
 
@@ -515,6 +529,15 @@ public class LGGame implements Listener {
         if (ended)
             return;
         night++;
+        if (SamaGamesAPI.get().getGameManager().getGame().hasDiscordChannel())
+            Bukkit.getScheduler().runTaskAsynchronously(SamaGamesAPI.get().getPlugin(), () -> {
+                List<UUID> playersToMute = new ArrayList<>();
+                for (LGPlayer player : getInGame()) {
+                    if (player.isDiscord())
+                        playersToMute.add(player.getPlayer().getUniqueId());
+                }
+                DiscordAPI.mutePlayers(playersToMute);
+            });
         broadcastSpacer();
         broadcastMessage("§9----------- §lNuit n°" + night + "§9 -----------");
         broadcastMessage("§8§oLa nuit tombe sur le village...");
@@ -638,6 +661,16 @@ public class LGGame implements Listener {
         if (ended)
             return;
 
+        if (SamaGamesAPI.get().getGameManager().getGame().hasDiscordChannel())
+            Bukkit.getScheduler().runTaskAsynchronously(SamaGamesAPI.get().getPlugin(), () -> {
+                List<UUID> playersToUnmute = new ArrayList<>();
+                for (LGPlayer player : getInGame()) {
+                    if (player.isDiscord())
+                        playersToUnmute.add(player.getPlayer().getUniqueId());
+                }
+                DiscordAPI.unmutePlayers(playersToUnmute);
+            });
+
         ArrayList<LGPlayer> winners = new ArrayList<>();
         LGGameEndEvent event = new LGGameEndEvent(this, winType, winners);
         Bukkit.getPluginManager().callEvent(event);
@@ -700,6 +733,15 @@ public class LGGame implements Listener {
     public void endNight() {
         if (ended)
             return;
+        if (SamaGamesAPI.get().getGameManager().getGame().hasDiscordChannel())
+            Bukkit.getScheduler().runTaskAsynchronously(SamaGamesAPI.get().getPlugin(), () -> {
+                List<UUID> playersToUnmute = new ArrayList<>();
+                for (LGPlayer player : getAlive()) {
+                    if (player.isDiscord())
+                        playersToUnmute.add(player.getPlayer().getUniqueId());
+                }
+                DiscordAPI.unmutePlayers(playersToUnmute);
+            });
         broadcastSpacer();
         broadcastMessage("§9----------- §lJour n°" + night + "§9 -----------");
         broadcastMessage("§8§oLe jour se lève sur le village...");

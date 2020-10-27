@@ -13,6 +13,10 @@ public class LGChat {
     private final HashMap<LGPlayer, LGChatCallback> viewers = new HashMap<>();
     @Getter
     private final LGChatCallback defaultCallback;
+    //TODO If discord rate limit inscresed
+//    @Getter
+//    @Setter
+//    private long discordID = -1L;
 
     public void sendMessage(LGPlayer sender, String message) {
         String sendMessage = getViewers().get(sender).send(sender, message);
@@ -21,6 +25,16 @@ public class LGChat {
     }
 
     public void join(LGPlayer player, LGChatCallback callback) {
+        //TODO If discord rate limit inscresed
+//        Bukkit.getScheduler().runTaskAsynchronously(SamaGamesAPI.get().getPlugin(), () -> {
+//            if (discordID == -1L && SamaGamesAPI.get().getGameManager().getGame().hasDiscordChannel())
+//                discordID = DiscordAPI.createChannel(SamaGamesAPI.get().getServerName());
+//            if (discordID != -1L && player.isDiscord()) {
+//                List<UUID> playersToMove = new ArrayList<>();
+//                playersToMove.add(player.getPlayer().getUniqueId());
+//                DiscordAPI.movePlayers(playersToMove, discordID);
+//            }
+//        });
         if (getViewers().containsKey(player))
             getViewers().replace(player, callback);
         else
@@ -29,6 +43,13 @@ public class LGChat {
 
     public void leave(LGPlayer player) {
         getViewers().remove(player);
+        //TODO If discord rate limit inscresed
+//        Bukkit.getScheduler().runTaskLaterAsynchronously(SamaGamesAPI.get().getPlugin(), () -> {
+//            if (getViewers().isEmpty() && discordID != -1L) {
+//                DiscordAPI.deleteChannel(discordID);
+//                discordID = -1L;
+//            }
+//        }, 50L);
     }
 
     public interface LGChatCallback {
