@@ -27,6 +27,7 @@ import fr.leomelki.loupgarou.utils.VariousUtils;
 import lombok.Getter;
 import lombok.Setter;
 import net.samagames.api.SamaGamesAPI;
+import net.samagames.tools.PlayerUtils;
 import net.samagames.tools.discord.DiscordAPI;
 import org.bukkit.*;
 import org.bukkit.configuration.file.FileConfiguration;
@@ -764,6 +765,8 @@ public class LGGame implements Listener {
         int died = 0;
         boolean endGame = false;
 
+        final List<LGPlayer> dieds = new ArrayList<>();
+
         for (Entry<Reason, LGPlayer> entry : deaths.entrySet()) {
             if (entry.getKey() == Reason.DONT_DIE)
                 continue;
@@ -776,15 +779,16 @@ public class LGGame implements Listener {
                 if (!event.isCancelled()) {
                     endGame |= kill(event.getKilled(), event.getReason(), false);
                     died++;
+                    dieds.add(event.getKilled());
                 }
             }
         }
+        for (LGPlayer diedPlayer : dieds)
+            for (LGPlayer p : getAlive())
+                SamaGamesAPI.get().getGameManager().getGame().addCoins(p.getPlayer(), 3, "Mort de " + PlayerUtils.getColoredFormattedPlayerName(diedPlayer.getPlayer()));
         deaths.clear();
         if (died == 0)
             broadcastMessage("§9Étonnamment, personne n'est mort cette nuit.");
-
-        for (LGPlayer p : getAlive())
-            SamaGamesAPI.get().getGameManager().getGame().addCoins(p.getPlayer(), 3, "Survivre à une nuit");
 
         day = true;
         for (LGPlayer player : getInGame())
