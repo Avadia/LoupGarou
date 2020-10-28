@@ -222,18 +222,8 @@ public class LGGame implements Listener {
             player.updateInventory();
             player.closeInventory();
 
-            if (SamaGamesAPI.get().getGameManager().getGame().hasDiscordChannel() && SamaGamesAPI.get().getPlayerManager().getPlayerData(lgp.getPlayer().getUniqueId()).isLinkedToDiscord()) {
-                Bukkit.getScheduler().runTaskAsynchronously(SamaGamesAPI.get().getPlugin(), () -> {
-                    lgp.sendActionBarMessage("Vérification de votre lien Discord...");
-                    if (DiscordAPI.isConnected(lgp.getPlayer().getUniqueId())) {
-                        lgp.setDiscord(true);
-                        lgp.sendActionBarMessage("Discord: " + ChatColor.GREEN + "Connecté");
-                    } else {
-                        lgp.setDiscord(false);
-                        lgp.sendActionBarMessage("Discord: " + ChatColor.RED + "Déconnecté");
-                    }
-                });
-            }
+            if (SamaGamesAPI.get().getGameManager().getGame().hasDiscordChannel() && SamaGamesAPI.get().getPlayerManager().getPlayerData(lgp.getPlayer().getUniqueId()).isLinkedToDiscord())
+                Bukkit.getScheduler().runTaskAsynchronously(SamaGamesAPI.get().getPlugin(), () -> lgp.setDiscord(DiscordAPI.isConnected(lgp.getPlayer().getUniqueId())));
 
             lgp.joinChat(dayChat);
 
