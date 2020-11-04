@@ -22,6 +22,8 @@ import net.minecraft.server.v1_12_R1.PacketPlayOutRespawn;
 import net.minecraft.server.v1_12_R1.WorldType;
 import net.samagames.tools.Titles;
 import net.samagames.tools.chat.ActionBarAPI;
+import net.samagames.tools.discord.DiscordAPI;
+import org.bukkit.Bukkit;
 import org.bukkit.GameMode;
 import org.bukkit.Location;
 import org.bukkit.craftbukkit.v1_12_R1.entity.CraftPlayer;
@@ -103,6 +105,14 @@ public class LGPlayer {
 
     public void remove() {
         this.player = null;
+        if (isDiscord()) {
+            List<UUID> playerList = new ArrayList<>();
+            playerList.add(getPlayer().getUniqueId());
+            Bukkit.getScheduler().runTaskAsynchronously(MainLg.getInstance(), () -> {
+                DiscordAPI.unmutePlayers(playerList);
+                DiscordAPI.kickPlayers(playerList);
+            });
+        }
     }
 
     public String getFullName() {

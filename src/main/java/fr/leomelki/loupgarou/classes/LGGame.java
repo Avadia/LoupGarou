@@ -726,16 +726,7 @@ public class LGGame implements Listener {
     public void endNight() {
         if (ended)
             return;
-        if (SamaGamesAPI.get().getGameManager().getGame().hasDiscordChannel())
-            Bukkit.getScheduler().runTaskAsynchronously(SamaGamesAPI.get().getPlugin(), () -> {
-                for (LGPlayer player : getAlive()) {
-                    if (player.isDiscord()) {
-                        List<UUID> playersToUnmute = new ArrayList<>();
-                        playersToUnmute.add(player.getPlayer().getUniqueId());
-                        DiscordAPI.unmutePlayers(playersToUnmute);
-                    }
-                }
-            });
+
         broadcastSpacer();
         broadcastMessage("§9----------- §lJour n°" + night + "§9 -----------");
         broadcastMessage("§8§oLe jour se lève sur le village...");
@@ -776,6 +767,16 @@ public class LGGame implements Listener {
         for (LGPlayer diedPlayer : dieds)
             for (LGPlayer p : getAlive())
                 SamaGamesAPI.get().getGameManager().getGame().addCoins(p.getPlayer(), 3, "Mort de " + PlayerUtils.getColoredFormattedPlayerName(diedPlayer.getPlayer()));
+        if (SamaGamesAPI.get().getGameManager().getGame().hasDiscordChannel())
+            Bukkit.getScheduler().runTaskAsynchronously(SamaGamesAPI.get().getPlugin(), () -> {
+                for (LGPlayer player : getAlive()) {
+                    if (player.isDiscord()) {
+                        List<UUID> playersToUnmute = new ArrayList<>();
+                        playersToUnmute.add(player.getPlayer().getUniqueId());
+                        DiscordAPI.unmutePlayers(playersToUnmute);
+                    }
+                }
+            });
         deaths.clear();
         if (died == 0)
             broadcastMessage("§9Étonnamment, personne n'est mort cette nuit.");
